@@ -18,7 +18,7 @@ const hideDropdown = e => {
     <>
     <Navbar bg="light" expand="lg">
       <Container fluid>
-        <Navbar.Brand href="#"><img src="./favicon.ico" width="70rem" alt="RIADS" /></Navbar.Brand>
+        <Navbar.Brand href="#"><img src="./favicon.ico" className='w-20' alt="RIADS" /></Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav className="me-auto my-2 my-lg-0 w-100 justify-content-center" style={{ maxHeight: "auto" }} navbarScroll >
