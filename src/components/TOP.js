@@ -2,7 +2,7 @@ import React from 'react'
 
 export const TOP = () => {
    return (
-      <div className='bg-[#c54545] text-white font-medium  text-sm px-5'>
+      <div className='bg-[#c54545] text-white font-semibold  text-sm px-5'>
          <div className="row align-items-center">
             <div className="col-sm-4">
                <ul className="left-info ">
