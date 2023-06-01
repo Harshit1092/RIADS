@@ -4,8 +4,8 @@ import img from "../images/about.jpg";
 
 export const About = () => {
     return (
-        <div className="ptb-30 mt-5">
-            <div className="container">
+        <div className="ptb-30 bg-gray-100">
+            <div className="container py-5 ">
                 <div className="row align-items-center">
                     <div className="col-md-5">
                         <div className="">
