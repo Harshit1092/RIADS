@@ -32,34 +32,35 @@ export const Slider = () => {
             <Slide
                 navDescription="1.jpg"
                 background={{
-                    backgroundImage:img1,
-                    // backgroundAttachment: "fixed"
-                }}
-            />
-            <Slide
-                background={{
-                    backgroundImage:img2,
+                    backgroundImage:`url(${img1})`,
                     backgroundAttachment: "fixed"
                 }}
             />
             <Slide
                 background={{
-                    backgroundImage:img3,
+                    backgroundImage:`url(${img2})`,
                     backgroundAttachment: "fixed"
                 }}
             />
             <Slide
                 background={{
-                    backgroundImage:img4,
+                    backgroundImage:`url(${img3})`,
                     backgroundAttachment: "fixed"
                 }}
             />
             <Slide
                 background={{
-                    backgroundImage:img5,
+                    backgroundImage:`url(${img4})`,
                     backgroundAttachment: "fixed"
                 }}
             />
+            <Slide
+                background={{
+                    backgroundImage:`url(${img5})`,
+                    backgroundAttachment: "fixed"
+                }}
+            />
+            
             
             
         </HeroSlider>
