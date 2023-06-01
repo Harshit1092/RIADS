@@ -6,6 +6,7 @@ import {Header} from './components/Header.js';
 import {TOP} from './components/TOP.js';
 import {Slider} from './components/Slider.js';
 import {About} from './components/About.js';
+import { Regis } from './components/Regis.js';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
     <Header />
     <Slider />
     <About />
+    <Regis />
   </>
   );
 }

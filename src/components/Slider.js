@@ -11,8 +11,6 @@ export const Slider = () => {
     return (
         <div >
         <HeroSlider autoplay={2} shouldAutoplay={true} autoplayDuration={5} shouldDisplayButtons={true}
-            transitionEffect="scrollHorz"
-            transition
             slidingAnimation="left_to_right"
             orientation="horizontal"
             initialSlide={1}
