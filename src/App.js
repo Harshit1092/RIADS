@@ -5,7 +5,7 @@ import 'bootstrap/dist/js/bootstrap.min.js';
 import {Header} from './components/Header.js';
 import {TOP} from './components/TOP.js';
 import {Slider} from './components/Slider.js';
-
+import {About} from './components/About.js';
 
 function App() {
   return (
@@ -13,6 +13,7 @@ function App() {
     <TOP />
     <Header />
     <Slider />
+    <About />
   </>
   );
 }

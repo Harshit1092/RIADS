@@ -9,57 +9,53 @@ import img5 from "../images/5.jpg";
 
 export const Slider = () => {
     return (
-        <div className='h-10'>
-        <HeroSlider
+        <div >
+        <HeroSlider autoplay={2} shouldAutoplay={true} autoplayDuration={5} shouldDisplayButtons={true}
+            transitionEffect="scrollHorz"
+            transition
             slidingAnimation="left_to_right"
             orientation="horizontal"
             initialSlide={1}
             onBeforeChange={(previousSlide, nextSlide) =>console.log("onBeforeChange", previousSlide, nextSlide)}
             onChange={(nextSlide) => console.log("onChange", nextSlide)}
             onAfterChange={(nextSlide) => console.log("onAfterChange", nextSlide)}
-            style={{
-                backgroundColor: "rgba(0, 0, 0, 0.33)"
-            }}
-            settings={{
-                slidingDuration: 250,
-                slidingDelay: 100,
-                shouldAutoplay: true,
-                shouldDisplayButtons: true,
-                autoplayDuration: 5000,
-                height: "90vmin"
-            }}
+            // settings={{
+            //     shouldAutoplay: true,
+            //     shouldDisplayButtons: true,
+            // }}
+            height="25rem"
         >
-            <Slide
-                navDescription="1.jpg"
-                background={{
-                    backgroundImage:`url(${img1})`,
-                    backgroundAttachment: "fixed"
-                }}
-            />
-            <Slide
-                background={{
-                    backgroundImage:`url(${img2})`,
-                    backgroundAttachment: "fixed"
-                }}
-            />
-            <Slide
-                background={{
-                    backgroundImage:`url(${img3})`,
-                    backgroundAttachment: "fixed"
-                }}
-            />
-            <Slide
-                background={{
-                    backgroundImage:`url(${img4})`,
-                    backgroundAttachment: "fixed"
-                }}
-            />
-            <Slide
-                background={{
-                    backgroundImage:`url(${img5})`,
-                    backgroundAttachment: "fixed"
-                }}
-            />
+            <Slide >
+                <div className='h-screen flex items-center justify-center bg-[#c54545] bg-center' style={{backgroundImage:`url(${img1})
+                `,backgroundAttachment: "fixed"
+                }}>
+                </div>
+            </Slide>
+            <Slide >
+                <div className='h-screen flex items-center justify-center bg-[#c54545] bg-center' style={{backgroundImage:`url(${img2})
+                `,backgroundAttachment: "fixed"
+                }}>
+                </div>
+            </Slide>
+            <Slide >
+                <div className='h-screen flex items-center justify-center bg-[#c54545] bg-center' style={{backgroundImage:`url(${img3})
+                `,backgroundAttachment: "fixed"
+                }}>
+                </div>
+            </Slide>
+            <Slide >
+                <div className='h-screen flex items-center justify-center bg-[#c54545] bg-center' style={{backgroundImage:`url(${img4})
+                `,backgroundAttachment: "fixed"
+                }}>
+                </div>
+            </Slide>
+            <Slide >
+                <div className='h-screen flex items-center justify-center bg-[#c54545] bg-center' style={{backgroundImage:`url(${img5})
+                `,backgroundAttachment: "fixed"
+                }}>
+                </div>
+            </Slide>
+           
             
             
             
