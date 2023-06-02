@@ -33,7 +33,7 @@ export const Header = () => {
                   <NavDropdown.Item href="#" onMouseLeave={hideDropdown}>Refresher Course on HMV Drivers</NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link href="#">Notice</Nav.Link>
-                <a href="/login"><button type="button" className="bg-[#f75959] px-3 py-2 text-white">Login / Signup</button></a>                
+                <a href="/login"><button type="button" className="bg-[#c54545] px-3 py-2 text-white">Login / Signup</button></a>                
               </Nav>
             </Navbar.Collapse>
           </Container>

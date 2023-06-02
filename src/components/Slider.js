@@ -24,31 +24,31 @@ export const Slider = () => {
             height="25rem"
         >
             <Slide >
-                <div className='h-screen flex items-center justify-center bg-[#f75959] bg-center' style={{backgroundImage:`url(${img1})
+                <div className='h-screen flex items-center justify-center bg-[#c54545] bg-center' style={{backgroundImage:`url(${img1})
                 `,backgroundAttachment: "fixed"
                 }}>
                 </div>
             </Slide>
             <Slide >
-                <div className='h-screen flex items-center justify-center bg-[#f75959] bg-center' style={{backgroundImage:`url(${img2})
+                <div className='h-screen flex items-center justify-center bg-[#c54545] bg-center' style={{backgroundImage:`url(${img2})
                 `,backgroundAttachment: "fixed"
                 }}>
                 </div>
             </Slide>
             <Slide >
-                <div className='h-screen flex items-center justify-center bg-[#f75959] bg-center' style={{backgroundImage:`url(${img3})
+                <div className='h-screen flex items-center justify-center bg-[#c54545] bg-center' style={{backgroundImage:`url(${img3})
                 `,backgroundAttachment: "fixed"
                 }}>
                 </div>
             </Slide>
             <Slide >
-                <div className='h-screen flex items-center justify-center bg-[#f75959] bg-center' style={{backgroundImage:`url(${img4})
+                <div className='h-screen flex items-center justify-center bg-[#c54545] bg-center' style={{backgroundImage:`url(${img4})
                 `,backgroundAttachment: "fixed"
                 }}>
                 </div>
             </Slide>
             <Slide >
-                <div className='h-screen flex items-center justify-center bg-[#f75959] bg-center' style={{backgroundImage:`url(${img5})
+                <div className='h-screen flex items-center justify-center bg-[#c54545] bg-center' style={{backgroundImage:`url(${img5})
                 `,backgroundAttachment: "fixed"
                 }}>
                 </div>
