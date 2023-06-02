@@ -34,7 +34,8 @@ export default function Signup() {
                   <div className="text w-100">
                     <h2>Welcome to Sign Up</h2>
                     <p>Already have an account?</p>
-                    <Link className="btn btn-white btn-outline-white" to="/login">Sign In</Link>
+                    <Link className="btn btn-white btn-outline-white mx-2" to="/login">Sign In</Link>
+                    <Link className="btn btn-white btn-outline-white mx-2" to="/">Home</Link>
                   </div>
                 </div>
                 <div className="login-wrap p-4 p-lg-5">

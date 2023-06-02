@@ -17,11 +17,11 @@ export const Regis = () => {
                    <div className="row">
                       <div className="col-md-8">
                          <div className="form-group">
-                            <input type="text" name="reff" className="form-control" required="" placeholder="Enter Registration No.*"/>
+                            <input type="text" name="reff" className="form-control bg-white" required="" placeholder="Enter Registration No.*"/>
                          </div>
                       </div>
                       <div className="col-md-4 text-center">
-                         <button type="submit" name="submit_track" className="default-btn-one bg-black text-white p-3 ">Search</button>
+                         <button type="submit" name="submit_track" className="default-btn-one bg-black text-white p-2 px-3 rounded ">Search</button>
                       </div>
                    </div>
                 </div>

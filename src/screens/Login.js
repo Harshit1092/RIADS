@@ -29,7 +29,8 @@ export default function Login() {
                 <div className="text w-100">
                   <h2>Welcome to login</h2>
                   <p>Don't have an account?</p>
-                  <Link className="btn btn-white btn-outline-white" to="/signup">Sign Up</Link>
+                  <Link className="btn btn-white btn-outline-white mx-2" to="/signup">Sign Up</Link>
+                  <Link className="btn btn-white btn-outline-white mx-2" to="/">Home</Link>
                 </div>
               </div>
               <div className="login-wrap p-4 p-lg-5">
@@ -66,7 +67,7 @@ export default function Login() {
                   </div>
                   <div className="form-group d-md-flex float-left">
                     <div className="text-md-right">
-                      <a href="/forgot-password">Forgot Password?</a>
+                      <Link to="/forgot-password">Forgot Password?</Link>
                     </div>
                   </div>
                 </form>

@@ -30,7 +30,8 @@ export default function ForgotPassword() {
                 <div className="text w-100">
                   <h2>Forget Password</h2>
                   <p>Know your password?</p>
-                  <Link className="btn btn-white btn-outline-white" to="/login">Log In</Link>
+                  <Link className="btn btn-white btn-outline-white mx-2" to="/login">Log In</Link>
+                  <Link className="btn btn-white btn-outline-white mx-2" to="/">Home</Link>
                 </div>
               </div>
               <div className="login-wrap p-4 p-lg-5">
