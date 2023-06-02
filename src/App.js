@@ -2,6 +2,7 @@
 // import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
+
 import {Home} from './components/Home.js';
 import Login from './screens/Login.js';
 import { Routes, Route, Navigate } from 'react-router-dom'

@@ -8,7 +8,7 @@ import {Slider} from './Slider.js';
 import {About} from './About.js';
 import { Regis } from './Regis.js';
 import { Middlehomeone } from './Middlehomeone.js';
-
+import { Choose } from './Choose.js';
 
 export const Home = () => {
   return (
@@ -19,6 +19,7 @@ export const Home = () => {
     <About />
     <Regis />
     <Middlehomeone />
+    <Choose />
     </>
 
   )
