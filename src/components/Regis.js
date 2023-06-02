@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Regis = () => {
   return (
-    <div className="order-form bg-gradient-to-r from-black to-[#c54545] bg-gray-100 ">
+    <div className="order-form bg-gradient-to-r from-black to-[#f75959] bg-gray-100 ">
     <div className="container pt-7 p-4">
        <div className="col-md-8 offset-md-2">
         <div className="m-4">

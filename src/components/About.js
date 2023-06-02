@@ -15,7 +15,7 @@ export const About = () => {
                     <div className="col-md-7">
                         <div className="">
                             <div className="section-title">
-                                <span className='font-bold text-[#c54545]'>About Our Company</span>
+                                <span className='font-bold text-[#f75959]'>About Our Company</span>
                                 <h2 className='font-bold'>Rupnagar Institute of Automotive &amp; Driving Skills</h2>
                             </div>
                             <div className="">
@@ -29,7 +29,7 @@ export const About = () => {
                                     Yadav IAS, is serving the needy and the downtrodden. Red Cross is already working on many social welfare
                                     projects like free dialysis facility for the indige.
                                 </p>
-                                <a href="/"><button type="button" className="bg-[#c54545] px-3 py-2 text-white">Read More</button></a>
+                                <a href="/"><button type="button" className="bg-[#f75959] px-3 py-2 text-white">Read More</button></a>
                             </div>
                         </div>
                     </div>
