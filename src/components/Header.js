@@ -16,14 +16,14 @@ export const Header = () => {
     setShow(false);
   }
   return (
-    <header className="sticky-top">
+    <div className="sticky-top">
       <div className="font-semibold">
         <Navbar bg="light" expand="lg">
           <Container fluid>
             <Navbar.Brand href="#"><img src="./favicon.ico" className='w-20 ml-14' alt="RIADS" /></Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
-              <Nav className="me-auto space-x-4 my-2 my-lg-0 w-100 justify-content-center" style={{ maxHeight: "auto" }} navbarScroll >
+              <Nav className="me-auto space-x-4 my-2 my-lg-0 justify-content-center" navbarScroll >
                 <Nav.Link href="#">Home</Nav.Link>
                 <Nav.Link href="#">Contact Us</Nav.Link>
                 <Nav.Link href="#">Success Story</Nav.Link>
@@ -33,13 +33,16 @@ export const Header = () => {
                   <NavDropdown.Item href="#" onMouseLeave={hideDropdown}>Refresher Course on HMV Drivers</NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link href="#">Notice</Nav.Link>
-                <Nav.Link href="#">Candidate Login</Nav.Link>
-                <Nav.Link href="#">Admin Login</Nav.Link>                
-              </Nav>
+                </Nav>
+              <Nav.Link href="#"><button type="button" className="bg-[#c54545] mr-3 text-xs px-3 text-white">Candidate <br/> Login</button></Nav.Link>
+              <Nav.Link href="#"><button type="button" className="bg-[#c54545] ml-3 text-xs px-3 text-white">Admin <br/> Login</button></Nav.Link>                
+              
             </Navbar.Collapse>
           </Container>
         </Navbar>
       </div>
-    </header>
+    </div>
   )
 }
+
+
