@@ -9,6 +9,7 @@ import {About} from './About.js';
 import { Regis } from './Regis.js';
 import { Middlehomeone } from './Middlehomeone.js';
 import { Choose } from './Choose.js';
+import { Footer } from './Footer.js';
 
 export const Home = () => {
   return (
@@ -20,6 +21,7 @@ export const Home = () => {
     <Regis />
     <Middlehomeone />
     <Choose />
+    <Footer/>
     </>
 
   )
