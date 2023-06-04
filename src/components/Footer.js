@@ -100,22 +100,22 @@ export const Footer = () => {
                         <div class="flex justify-center">
                             <ul class="list-none text-left">
                                 <li class="py-2">
-                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline">Home</a>
+                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline hover:text-red-500 hover:ml-2 hover:text-lg">Home</a>
                                 </li>
                                 <li class="py-2">
-                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline">Take Mock Test</a>
+                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline hover:text-red-500 hover:ml-2 hover:text-lg">Take Mock Test</a>
                                 </li>
                                 <li class="py-2">
-                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline">Our Courses</a>
+                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline hover:text-red-500 hover:ml-2 hover:text-lg">Our Courses</a>
                                 </li>
                                 <li class="py-2">
-                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline">Download Study Material</a>
+                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline hover:text-red-500 hover:ml-2 hover:text-lg">Download Study Material</a>
                                 </li>
                                 <li class="py-2">
-                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline">Gallery</a>
+                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline hover:text-red-500 hover:ml-2 hover:text-lg">Gallery</a>
                                 </li>
                                 <li class="py-2">
-                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline">Contact Us</a>
+                                    <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline hover:text-red-500 hover:ml-2 hover:text-lg">Contact Us</a>
                                 </li>
                             </ul>
                         </div>
@@ -133,7 +133,7 @@ export const Footer = () => {
                         <hr class="h-px my-8 bg-gray-200 border-2 dark:bg-gray-700"></hr>
                         <ul>
                             <li class="py-2">
-                                <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline"
+                                <a href="#!" class="text-neutral-600 dark:text-neutral-200 no-underline hover:text-red-500 hover:ml-2 hover:text-lg"
                                 >Refresher Course for HMV Drivers</a
                                 >
                             </li>

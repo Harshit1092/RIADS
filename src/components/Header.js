@@ -34,6 +34,7 @@ export const Header = () => {
                 </NavDropdown>
                 <Nav.Link href="#">Notice</Nav.Link>
                 <Link to="/login"><button type="button" className="bg-[#c54545] px-3 py-2 text-white">Login / Signup</button></Link>                
+                <Link to="/candidate-dashboard"><button type="button" className="bg-[#c54545] px-3 py-2 text-white">Candidate Panel</button></Link>                
               </Nav>
             </Navbar.Collapse>
           </Container>
