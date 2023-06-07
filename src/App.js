@@ -11,6 +11,7 @@ import Dashboard from './screens/CandidatePanel/scenes/Dashboard.js';
 import Attendance from './screens/CandidatePanel/scenes/Attendance.js';
 import StudyMaterial from './screens/CandidatePanel/scenes/StudyMaterial.js';
 import ViewRegistration from './screens/CandidatePanel/scenes/ViewRegistration.js';
+import Result from './screens/CandidatePanel/scenes/Result.js';
 import About from './screens/about';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path='/candidate-dashboard' element={<Dashboard />} />
         <Route path='/candidate-attendance' element={<Attendance />} />
         <Route path='/candidate-studymaterial' element={<StudyMaterial />} />
+        <Route path='/candidate-result' element={<Result />} />
         <Route
           path='/candidate-viewregistration'
           element={<ViewRegistration />}

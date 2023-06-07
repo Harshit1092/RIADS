@@ -9,6 +9,7 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import user from '../user.png';
 
@@ -133,6 +134,13 @@ const Sidebar = () => {
               title="Attendance"
               to="/candidate-attendance"
               icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            /> 
+            <Item
+              title="Result"
+              to="/candidate-result"
+              icon={<AssessmentOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             /> 
