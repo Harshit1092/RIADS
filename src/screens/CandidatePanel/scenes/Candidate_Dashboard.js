@@ -4,7 +4,7 @@ import { tokens } from "../theme";
 import Topbar from "./global/Topbar";
 import Sidebar from "./global/Sidebar";
 
-const Dashboard = () => {
+const Candidate_Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
@@ -46,4 +46,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Candidate_Dashboard;

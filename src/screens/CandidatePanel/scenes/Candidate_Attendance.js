@@ -8,7 +8,7 @@ import Topbar from "./global/Topbar";
 import Sidebar from "./global/Sidebar";
 
 
-const Attendance = () => {
+const Candidate_Attendance = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
@@ -131,4 +131,4 @@ const Attendance = () => {
   );
 };
 
-export default Attendance;
+export default Candidate_Attendance;

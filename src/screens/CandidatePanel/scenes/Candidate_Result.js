@@ -8,7 +8,7 @@ import Topbar from "./global/Topbar";
 import Sidebar from "./global/Sidebar";
 
 
-const Result = () => {
+const Candidate_Result = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [isSidebar, setIsSidebar] = useState(true);
@@ -148,4 +148,4 @@ const Result = () => {
     );
 };
 
-export default Result;
+export default Candidate_Result;

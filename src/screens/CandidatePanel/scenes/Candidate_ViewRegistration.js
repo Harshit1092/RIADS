@@ -7,7 +7,7 @@ import Topbar from "./global/Topbar";
 import Sidebar from "./global/Sidebar";
 
 
-const ViewRegistration = () => {
+const Candidate_ViewRegistration = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
@@ -72,4 +72,4 @@ const ViewRegistration = () => {
   );
 };
 
-export default ViewRegistration;
+export default Candidate_ViewRegistration;

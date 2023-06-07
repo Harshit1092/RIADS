@@ -6,7 +6,7 @@ import { mockDataContacts } from "../data/mockData";
 import Topbar from "./global/Topbar";
 import Sidebar from "./global/Sidebar";
 
-const StudyMaterial = () => {
+const Candidate_StudyMaterial = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
@@ -32,4 +32,4 @@ const StudyMaterial = () => {
   );
 };
 
-export default StudyMaterial;
+export default Candidate_StudyMaterial;

@@ -62,6 +62,14 @@ export const Header = () => {
                     Candidate Panel
                   </button>
                 </Link>
+                <Link to='/admin-dashboard'>
+                  <button
+                    type='button'
+                    className='bg-[#c54545] px-3 py-2 text-white'
+                  >
+                    Admin Panel
+                  </button>
+                </Link>
               </Nav>
             </Navbar.Collapse>
           </Container>
