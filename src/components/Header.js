@@ -8,10 +8,10 @@ import { Link } from 'react-router-dom';
 
 export const Header = () => {
   const [show, setShow] = useState(false);
-  const showDropdown = e => {
+  const showDropdown = (e) => {
     setShow(!show);
   };
-  const hideDropdown = e => {
+  const hideDropdown = (e) => {
     setShow(false);
   };
   return (
@@ -54,7 +54,7 @@ export const Header = () => {
                     Login / Signup
                   </button>
                 </Link>
-                <Link to='/candidate-dashboard'>
+                {/* <Link to='/candidate-dashboard'>
                   <button
                     type='button'
                     className='bg-[#c54545] px-3 py-2 text-white'
@@ -68,6 +68,14 @@ export const Header = () => {
                     className='bg-[#c54545] px-3 py-2 text-white'
                   >
                     Admin Panel
+                  </button>
+                </Link> */}
+                <Link to='/register'>
+                  <button
+                    type='button'
+                    className='bg-[#c54545] px-3 py-2 text-white'
+                  >
+                    Register
                   </button>
                 </Link>
               </Nav>

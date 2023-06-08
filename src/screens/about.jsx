@@ -22,7 +22,7 @@ export default function About() {
       <Header />
       <Carousel controls={false} indicators={false}>
         <Carousel.Item>
-          <img className='d-block w-100' src='./bg-about.webp' alt='Slide' />
+          <img className='d-block w-100' src='/bg-about.webp' alt='Slide' />
           <div className='overlay flex items-center justify-center'>
             <div className='grid h-1/3 w-1/4 grid-rows-2 rounded-lg bg-red-500 bg-opacity-60'>
               <div className='text-center text-[2vw] font-extrabold text-white'>
