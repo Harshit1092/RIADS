@@ -16,25 +16,44 @@ import {
 } from '@material-ui/core';
 
 const schema = yup.object().shape({
-  name: yup.string().required('Name is required'),
-  fathersName: yup.string().required("Father's name is required"),
+  name: yup
+    .string()
+    .required('Name is required')
+    .min(4, 'Name should be at least 4 characters')
+    .max(50, 'Name should not exceed 50 characters'),
+  fathersName: yup
+    .string()
+    .required("Father's name is required")
+    .min(4, "Father's name should be at least 4 characters")
+    .max(50, "Father's name should not exceed 50 characters"),
   dateOfBirth: yup.date().required('Date of birth is required'),
-  phoneNumber: yup.string().required('Phone number is required'),
+  phoneNumber: yup
+    .string()
+    .required('Phone number is required')
+    .matches(/^\d+$/, 'Invalid phone number'),
   email: yup.string().email('Invalid email').required('Email is required'),
   qualification: yup.string().required('Qualification is required'),
-  passportSizePhoto: yup.mixed().required('Passport size photo is required'),
+  passportSizePhoto: yup
+    .mixed()
+    .required('Back picture of driving license is required'),
   address: yup.string().required('Address is required'),
   city: yup.string().required('City is required'),
-  pinCode: yup.string().required('Pin code is required'),
+  pinCode: yup
+    .string()
+    .required('Pin code is required')
+    .matches(/^\d+$/, 'Invalid pin code'),
   state: yup.string().required('State is required'),
-  adhaarCardNumber: yup.string().required('Aadhaar card number is required'),
+  adhaarCardNumber: yup
+    .string()
+    .required('Aadhaar card number is required')
+    .matches(/^\d+$/, 'Invalid Aadhaar card number'),
   district: yup.string().required('District is required'),
   frontAdhaarCard: yup
     .mixed()
-    .required('Front picture of Aadhaar card is required'),
+    .required('Back picture of driving license is required'),
   backAdhaarCard: yup
     .mixed()
-    .required('Back picture of Aadhaar card is required'),
+    .required('Back picture of driving license is required'),
   drivingLicenseNumber: yup
     .string()
     .required('Driving license number is required'),
@@ -44,7 +63,7 @@ const schema = yup.object().shape({
   issuingAuthority: yup.string().required('Issuing authority is required'),
   frontDrivingLicense: yup
     .mixed()
-    .required('Front picture of driving license is required'),
+    .required('Back picture of driving license is required'),
   backDrivingLicense: yup
     .mixed()
     .required('Back picture of driving license is required'),
@@ -66,6 +85,11 @@ export default function Form() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      qualification: '',
+      issuingAuthority: '',
+      licenseCategory: '',
+    },
   });
 
   const onSubmit = (data) => {
@@ -273,14 +297,14 @@ export default function Form() {
           <Grid item xs={12} sm={4}>
             <Controller
               control={control}
-              name='aadhaarCardNumber'
+              name='adhaarCardNumber'
               render={({ field }) => (
                 <TextField
                   {...field}
                   label='Aadhaar Card Number'
                   placeholder='Enter your Aadhaar card number'
-                  error={!!errors.aadhaarCardNumber}
-                  helperText={errors.aadhaarCardNumber?.message}
+                  error={!!errors.adhaarCardNumber}
+                  helperText={errors.adhaarCardNumber?.message}
                   fullWidth
                 />
               )}
@@ -305,14 +329,14 @@ export default function Form() {
           <Grid item xs={12} sm={4}>
             <Controller
               control={control}
-              name='frontPictureAadhaarCard'
+              name='frontAdhaarCard'
               render={({ field }) => (
                 <TextField
                   {...field}
                   label='Front Picture of Aadhaar Card'
                   type='file'
-                  error={!!errors.frontPictureAadhaarCard}
-                  helperText={errors.frontPictureAadhaarCard?.message}
+                  error={!!errors.frontAdhaarCard}
+                  helperText={errors.frontAdhaarCard?.message}
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
@@ -324,14 +348,14 @@ export default function Form() {
           <Grid item xs={12} sm={4}>
             <Controller
               control={control}
-              name='backPictureAadhaarCard'
+              name='backAdhaarCard'
               render={({ field }) => (
                 <TextField
                   {...field}
                   label='Back Picture of Aadhaar Card'
                   type='file'
-                  error={!!errors.backPictureAadhaarCard}
-                  helperText={errors.backPictureAadhaarCard?.message}
+                  error={!!errors.backAdhaarCard}
+                  helperText={errors.backAdhaarCard?.message}
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
@@ -440,14 +464,14 @@ export default function Form() {
           <Grid item xs={12} sm={4}>
             <Controller
               control={control}
-              name='frontPictureLicense'
+              name='frontDrivingLicense'
               render={({ field }) => (
                 <TextField
                   {...field}
                   label='Front Picture of Driving License'
                   type='file'
-                  error={!!errors.frontPictureLicense}
-                  helperText={errors.frontPictureLicense?.message}
+                  error={!!errors.frontDrivingLicense}
+                  helperText={errors.frontDrivingLicense?.message}
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
@@ -459,14 +483,14 @@ export default function Form() {
           <Grid item xs={12} sm={4}>
             <Controller
               control={control}
-              name='backPictureLicense'
+              name='backDrivingLicense'
               render={({ field }) => (
                 <TextField
                   {...field}
                   label='Back Picture of Driving License'
                   type='file'
-                  error={!!errors.backPictureLicense}
-                  helperText={errors.backPictureLicense?.message}
+                  error={!!errors.backDrivingLicense}
+                  helperText={errors.backDrivingLicense?.message}
                   fullWidth
                   InputLabelProps={{
                     shrink: true,
