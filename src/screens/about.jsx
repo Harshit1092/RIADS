@@ -1,5 +1,6 @@
 import { Carousel, Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+
 import { Choose } from '../components/Choose.js';
 import { Footer } from '../components/Footer.js';
 import { Header } from '../components/Header.js';

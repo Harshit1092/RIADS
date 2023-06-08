@@ -2,23 +2,23 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
+import { Route, Routes } from 'react-router-dom';
+
 import { Home } from './components/Home.js';
-import Login from './screens/Login.js';
-import { Routes, Route } from 'react-router-dom';
-import Signup from './screens/Signup.js';
-import ForgotPassword from './screens/ForgotPassword.js';
-import Candidate_Dashboard from './screens/CandidatePanel/scenes/Candidate_Dashboard.js';
-import Candidate_Attendance from './screens/CandidatePanel/scenes/Candidate_Attendance.js';
-import Candidate_StudyMaterial from './screens/CandidatePanel/scenes/Candidate_StudyMaterial.js';
-import Candidate_ViewRegistration from './screens/CandidatePanel/scenes/Candidate_ViewRegistration.js';
-import Candidate_Result from './screens/CandidatePanel/scenes/Candidate_Result.js';
-import Admin_Dashboard from './screens/AdminPanel/scenes/Admin_Dashboard.js';
+import About from './screens/about';
 import Admin_Attendance from './screens/AdminPanel/scenes/Admin_Attendance.js';
 import Admin_CandidateProfile from './screens/AdminPanel/scenes/Admin_CandidateProfile.js';
+import Admin_Dashboard from './screens/AdminPanel/scenes/Admin_Dashboard.js';
 import Admin_Result from './screens/AdminPanel/scenes/Admin_Result.js';
-
-import About from './screens/about';
+import Candidate_Attendance from './screens/CandidatePanel/scenes/Candidate_Attendance.js';
+import Candidate_Dashboard from './screens/CandidatePanel/scenes/Candidate_Dashboard.js';
+import Candidate_Result from './screens/CandidatePanel/scenes/Candidate_Result.js';
+import Candidate_StudyMaterial from './screens/CandidatePanel/scenes/Candidate_StudyMaterial.js';
+import Candidate_ViewRegistration from './screens/CandidatePanel/scenes/Candidate_ViewRegistration.js';
+import ForgotPassword from './screens/ForgotPassword.js';
+import Login from './screens/Login.js';
 import Register from './screens/register';
+import Signup from './screens/Signup.js';
 
 function App() {
   return (

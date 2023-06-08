@@ -4,7 +4,6 @@ import { Footer } from '../components/Footer.js';
 import { Header } from '../components/Header.js';
 import { Regis } from '../components/Regis.js';
 import { TOP } from '../components/TOP.js';
-
 import Form from '../components/ui/form';
 
 export default function Register() {
