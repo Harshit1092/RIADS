@@ -16,12 +16,12 @@ const Admin_Dashboard = () => {
         <Topbar />
       </div>
       <div className='flex flex-1'>
-        <div classNem='w-1/4'>
+        <div>
           <Sidebar isSidebar={isSidebar} />
         </div>
 
-        <div className='flex-1'>
-          <div align='center' overflow-x-auto>
+        <div className='flex-1 overflow-x-auto'>
+          <div align='center' >
             <Typography
               variant='h4'
               color={colors.grey[100]}

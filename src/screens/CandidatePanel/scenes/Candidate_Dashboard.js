@@ -15,13 +15,14 @@ const Candidate_Dashboard = () => {
       <div>
         <Topbar />
       </div>
-      <div className='flex flex-1'>
-        <div classNem='w-1/4'>
+      <div className='flex'>
+        <div>
           <Sidebar isSidebar={isSidebar} />
         </div>
 
-        <div className='flex-1'>
-          <div align='center' overflow-x-auto>
+        <div className='flex-1 overflow-x-auto'>
+          <div align='center'>
+            <div>
             <Typography
               variant='h4'
               color={colors.grey[100]}
@@ -30,6 +31,7 @@ const Candidate_Dashboard = () => {
             >
               WELCOME TO RIADS CANDIDATE DASHBOARD
             </Typography>
+            </div>
             <hr class='h-px my-8 bg-gray-200 border-2 dark:bg-gray-700'></hr>
             <div class='flex justify-center'>
               <ul class='list-none text-left'>
