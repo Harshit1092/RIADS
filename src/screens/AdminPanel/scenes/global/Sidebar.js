@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import { Menu, MenuItem, ProSidebar } from 'react-pro-sidebar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import 'react-pro-sidebar/dist/css/styles.css';
 
@@ -13,6 +13,7 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 
+import { useAuth } from '../../../../contexts/AuthContext';
 import { tokens } from '../../theme';
 import user from '../user.png';
 
@@ -39,6 +40,17 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState('Dashboard');
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <Box
@@ -140,6 +152,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
+              onClick={handleLogout}
               title='Log Out'
               to='/'
               icon={<LogoutOutlinedIcon />}

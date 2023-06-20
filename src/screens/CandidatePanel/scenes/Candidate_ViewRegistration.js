@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { mockDataAttendance } from '../data/mockData';
-import { mockDataRegistration } from '../data/mockData';
+
+import { mockDataAttendance, mockDataRegistration } from '../data/mockData';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
@@ -42,11 +42,11 @@ const Candidate_ViewRegistration = () => {
         <Topbar />
       </div>
       <div className='flex flex-1'>
-        <div >
+        <div>
           <Sidebar isSidebar={isSidebar} />
         </div>
         <div className='flex-1 overflow-x-auto'>
-          <div className="text-center">
+          <div className='text-center'>
             <Typography variant='h5' color={colors.greenAccent[400]}>
               View and Edit Registration
             </Typography>
@@ -73,7 +73,6 @@ const Candidate_ViewRegistration = () => {
                               </div>
                             </div>
                           </td>
-
                         </tr>
                       ))}
                     </tbody>

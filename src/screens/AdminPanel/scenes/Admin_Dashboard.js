@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Box, Button, IconButton, Typography, useTheme } from '@mui/material';
+import { Typography, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
+import { useAuth } from '../../../contexts/AuthContext';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
@@ -9,6 +11,17 @@ const Admin_Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
@@ -21,7 +34,7 @@ const Admin_Dashboard = () => {
         </div>
 
         <div className='flex-1 overflow-x-auto'>
-          <div align='center' >
+          <div align='center'>
             <Typography
               variant='h4'
               color={colors.grey[100]}
@@ -58,12 +71,12 @@ const Admin_Dashboard = () => {
                   </a>
                 </li>
                 <li class='py-2'>
-                  <a
-                    href='/'
+                  <button
+                    onClick={handleLogout}
                     class='text-neutral-600 dark:text-neutral-200 no-underline hover:text-red-500 hover:ml-2 hover:text-lg'
                   >
                     Logout
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>

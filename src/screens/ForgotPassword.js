@@ -4,12 +4,29 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import '../styles/Login.css';
 
+import { useAuth } from '../contexts/AuthContext';
+
 export default function ForgotPassword() {
   const emailRef = useRef();
+  const { resetPassword } = useAuth();
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      setError('');
+      setLoading(true);
+      await resetPassword(emailRef.current.value);
+      navigate('/login');
+    } catch {
+      setError('Wrong email or password');
+    }
+    setLoading(false);
+  }
 
   return (
     <section className='ftco-section'>
@@ -53,7 +70,7 @@ export default function ForgotPassword() {
                     <h3 className='mb-4'>Forget Password</h3>
                   </div>
                 </div>
-                <form onSubmit={() => {}} className='signin-form'>
+                <form onSubmit={handleSubmit} className='signin-form'>
                   {error && <Alert variant='danger'>{error}</Alert>}
                   <div className='form-group mb-3'>
                     <label className='label' htmlFor='name'>

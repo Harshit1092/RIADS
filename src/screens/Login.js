@@ -4,11 +4,37 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import '../styles/Login.css';
 
+import { useAuth } from '../contexts/AuthContext';
+
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      setError('');
+      setLoading(true);
+
+      await login(emailRef.current.value, passwordRef.current.value);
+
+      const userType = document.querySelector(
+        'input[name="choice"]:checked'
+      ).value;
+
+      navigate(`/${userType}-dashboard`);
+    } catch {
+      setError('Wrong email or password');
+    }
+    setLoading(false);
+  }
+
   return (
     <section className='ftco-section'>
       <div className={`toast ${error ? 'show' : ''}`} id='toast'>
@@ -51,7 +77,7 @@ export default function Login() {
                     </h3>
                   </div>
                 </div>
-                <form onSubmit={() => {}} className='signin-form'>
+                <form onSubmit={handleSubmit} className='signin-form'>
                   <div className='form-group mb-3'>
                     <label className='label' htmlFor='name'>
                       Email

@@ -18,14 +18,14 @@ const Candidate_Result = () => {
         <Topbar />
       </div>
       <div className='flex flex-1'>
-        <div >
+        <div>
           <Sidebar isSidebar={isSidebar} />
         </div>
         <div className='flex-1 overflow-x-auto'>
-        <div className="text-center">
-          <Typography variant='h5' color={colors.greenAccent[400]}>
-            View Result and Download Result Certificate
-          </Typography>
+          <div className='text-center'>
+            <Typography variant='h5' color={colors.greenAccent[400]}>
+              View Result and Download Result Certificate
+            </Typography>
           </div>
           <hr class='h-px my-8 bg-gray-200 border-2 dark:bg-gray-700'></hr>
 
@@ -151,12 +151,9 @@ const Candidate_Result = () => {
                   </table>
                 </div>
               </div>
-              
-                
-              
             </div>
-            <div className="text-gray-700 pt-4 pl-4 pr-4">
-            Note: - 30 percent is passing marks.
+            <div className='text-gray-700 pt-4 pl-4 pr-4'>
+              Note: - 30 percent is passing marks.
             </div>
           </div>
         </div>
