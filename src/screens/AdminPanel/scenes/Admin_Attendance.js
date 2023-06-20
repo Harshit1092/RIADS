@@ -22,10 +22,10 @@ const Admin_Attendance = () => {
           <Sidebar isSidebar={isSidebar} />
         </div>
         <div className='flex-1 overflow-x-auto'>
-        <div className="text-center">
-          <Typography variant='h5' color={colors.greenAccent[400]}>
-            Attendance
-          </Typography>
+          <div className='text-center'>
+            <Typography variant='h5' color={colors.greenAccent[400]}>
+              Attendance
+            </Typography>
           </div>
           <hr class='h-px my-8 bg-gray-200 border-2 dark:bg-gray-700'></hr>
 

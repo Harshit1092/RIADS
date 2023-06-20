@@ -6,19 +6,20 @@ import { useAuth } from '../contexts/AuthContext';
 
 import '../styles/Login.css';
 
-export default function Signup() {
+export default function UpdateProfile() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const nameRef = useRef();
+  // const nameRef = useRef();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { signup } = useAuth();
+  const { updateEmail, updatePassword, currentUser } = useAuth();
 
   async function handleSubmit(e) {
     e.preventDefault();
+
     const userType = document.querySelector(
       'input[name="choice"]:checked'
     ).value;
@@ -27,19 +28,28 @@ export default function Signup() {
       return setError('Passwords do not match!');
     }
 
-    try {
-      setError('');
-      setLoading(true);
+    const promises = [];
+    setLoading(true);
+    setError('');
 
-      await signup(emailRef.current.value, passwordRef.current.value);
-
-      navigate(`/${userType}-dashboard`);
-    } catch (error) {
-      setError(`Failed to create an account! ${error.message}`);
-      console.log(error);
-    } finally {
-      setLoading(false);
+    if (emailRef.current.value !== currentUser.email) {
+      promises.push(updateEmail(emailRef.current.value));
     }
+    if (passwordRef.current.value) {
+      promises.push(updatePassword(passwordRef.current.value));
+    }
+
+    Promise.all(promises)
+      .then(() => {
+        navigate(`/${userType}-dashboard`);
+      })
+      .catch((error) => {
+        console.log(error);
+        setError('Failed to update account');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   return (
@@ -64,14 +74,14 @@ export default function Signup() {
               <div className='wrap d-md-flex'>
                 <div className='text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last'>
                   <div className='text w-100'>
-                    <h2>Welcome to Sign Up</h2>
-                    <p>Already have an account?</p>
+                    <h2>Update Profile</h2>
+                    {/* <p>Already have an account?</p>
                     <Link
                       className='btn btn-white btn-outline-white mx-2'
                       to='/login'
                     >
                       Sign In
-                    </Link>
+                    </Link> */}
                     <Link
                       className='btn btn-white btn-outline-white mx-2'
                       to='/'
@@ -83,7 +93,7 @@ export default function Signup() {
                 <div className='login-wrap p-4 p-lg-5'>
                   <div className='d-flex'>
                     <div className='w-100'>
-                      <h3 className='mb-4 text-dark'>Register</h3>
+                      {/* <h3 className='mb-4 text-dark'>Register</h3> */}
                     </div>
                   </div>
                   <form
@@ -92,7 +102,7 @@ export default function Signup() {
                     className='signin-form'
                   >
                     {error && <Alert variant='danger'>{error}</Alert>}
-                    <div className='form-group mb-3'>
+                    {/* <div className='form-group mb-3'>
                       <label className='label' htmlFor='name'>
                         Username
                       </label>
@@ -103,7 +113,7 @@ export default function Signup() {
                         placeholder='Username'
                         required
                       />
-                    </div>
+                    </div> */}
                     <div className='form-group mb-3'>
                       <label className='label' htmlFor='email'>
                         Email
@@ -150,7 +160,7 @@ export default function Signup() {
                         id='register'
                         className='form-control btn btn-primary submit px-3'
                       >
-                        {loading ? 'Processing...' : 'Register'}
+                        {loading ? 'Processing...' : 'Update'}
                       </button>
                     </div>
                     <div className='form-group d-md-flex mt-3'>

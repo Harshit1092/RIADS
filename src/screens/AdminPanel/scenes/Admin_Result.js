@@ -22,7 +22,7 @@ const Admin_Result = () => {
           <Sidebar isSidebar={isSidebar} />
         </div>
         <div className='flex-1 overflow-x-auto'>
-          <div className="text-center">
+          <div className='text-center'>
             <Typography variant='h5' color={colors.greenAccent[400]}>
               Test Result and Certificate
             </Typography>
