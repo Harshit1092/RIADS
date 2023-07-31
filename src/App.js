@@ -22,6 +22,7 @@ import Login from './screens/Login.js';
 import Register from './screens/register';
 import Signup from './screens/Signup.js';
 import UpdateProfile from './screens/UpdateProfile.jsx';
+import CandidateTest from './screens/CandidatePanel/scenes/CandidateTest.jsx';
 
 function App() {
   return (
@@ -115,6 +116,12 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route 
+            path='/test'
+            element={<CandidateTest/ >}
+          />
+
+            
         </Routes>
       </AuthProvider>
     </div>

@@ -1,19 +1,30 @@
 import firebase from 'firebase/compat/app';
 
+// import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import {getStorage} from "firebase/storage"
+
 import 'firebase/compat/auth';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCrj0r2wPBqdVi1ZOMAC29m7P_PopclbH8',
-  authDomain: 'riads-development.firebaseapp.com',
-  projectId: 'riads-development',
-  storageBucket: 'riads-development.appspot.com',
-  messagingSenderId: '1045705555366',
-  appId: '1:1045705555366:web:9d6b5168bd32ecc147e367',
-  measurementId: 'G-ND81F0ZW11',
+  apiKey: "AIzaSyBZDrCitSFXiAtcyGfvBfkpBuYa-S2dcgc",
+  authDomain: "riads-2db45.firebaseapp.com",
+  projectId: "riads-2db45",
+  storageBucket: "riads-2db45.appspot.com",
+  messagingSenderId: "164572104707",
+  appId: "1:164572104707:web:fc2a738d2b1c721a032636",
+  measurementId: "G-EPG2LGKGDK"
 };
+
+// const app = firebase.initializeApp(firebaseConfig);
 
 const app = firebase.initializeApp(firebaseConfig);
 
-export const auth = app.auth();
+// export const auth = app.auth();
+const auth = app.auth();
 
-export default app;
+const db = getFirestore(app);
+const storage = getStorage(app)
+export {db, auth ,storage};
+
+// export default app;
