@@ -19,8 +19,8 @@ export const Middlehometwo = () => {
     smartSpeed: 450,
     nav: true,
     navText: [
-      '<span className="nav-button owl-prev inline-block absolute bottom-1/2 left-5 ">Prev</span>',
-      '<span className="nav-button owl-next">Next</span>',
+      '<span className="nav-button owl-prev inline-block absolute bottom-1/2 left-5" style="padding:10px">Prev</span>',
+      '<span className="nav-button owl-next" style="padding:10px">Next</span>',
     ],
   };
   return (
