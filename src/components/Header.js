@@ -19,7 +19,7 @@ export const Header = () => {
         <Navbar bg='light' expand='lg'>
           <Container fluid>
             <Navbar.Brand href='#'>
-              <img src='./favicon.ico' className='w-20 ml-14' alt='RIADS' />
+              <img src='./favicon.ico' className='w-20 ml-2 lg:ml-14 md:ml-10' alt='RIADS' />
             </Navbar.Brand>
             <Navbar.Toggle aria-controls='navbarScroll' />
             <Navbar.Collapse id='navbarScroll'>
