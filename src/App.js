@@ -2,6 +2,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { Route, Routes } from 'react-router-dom';
 
 import { Home } from './components/Home.js';
@@ -27,6 +30,7 @@ import CandidateTest from './screens/CandidatePanel/scenes/CandidateTest.jsx';
 function App() {
   return (
     <div className='App'>
+      <ToastContainer />
       <AuthProvider>
         <Routes>
           <Route path='/' element={<Home />} />
