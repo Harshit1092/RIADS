@@ -3,6 +3,7 @@ import { Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
+import { db } from '../firebase';
 
 import '../styles/Login.css';
 
@@ -31,7 +32,15 @@ export default function Signup() {
       setError('');
       setLoading(true);
 
-      await signup(emailRef.current.value, passwordRef.current.value);
+      let userCred = await signup(
+        emailRef.current.value,
+        passwordRef.current.value
+      );
+      let user = userCred.user;
+      await db.collection(userType).doc(user.uid).set({
+        name: nameRef.current.value,
+        email: emailRef.current.value,
+      });
 
       navigate(`/${userType}-dashboard`);
     } catch (error) {

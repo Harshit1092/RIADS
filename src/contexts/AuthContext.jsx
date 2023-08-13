@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 
 const AuthContext = createContext();
 
@@ -11,6 +11,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState();
 
   function signup(email, password) {
     return auth.createUserWithEmailAndPassword(email, password);
@@ -37,9 +38,25 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
       setLoading(false);
+
+      if (user) {
+        const adminRef = db.collection('admin').doc(user.uid);
+        const candidateRef = db.collection('candidate').doc(user.uid);
+
+        const admindoc = await adminRef.get();
+        const candidatedoc = await candidateRef.get();
+
+        if (admindoc.exists) {
+          setUserRole('admin');
+        } else if (candidatedoc.exists) {
+          setUserRole('candidate');
+        } else {
+          setUserRole('none');
+        }
+      }
     });
 
     return unsubscribe;
@@ -47,6 +64,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    userRole,
     login,
     signup,
     logout,

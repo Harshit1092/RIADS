@@ -2,7 +2,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 import { Route, Routes } from 'react-router-dom';
@@ -20,12 +21,12 @@ import Candidate_Dashboard from './screens/CandidatePanel/scenes/Candidate_Dashb
 import Candidate_Result from './screens/CandidatePanel/scenes/Candidate_Result.js';
 import Candidate_StudyMaterial from './screens/CandidatePanel/scenes/Candidate_StudyMaterial.js';
 import Candidate_ViewRegistration from './screens/CandidatePanel/scenes/Candidate_ViewRegistration.js';
+import CandidateTest from './screens/CandidatePanel/scenes/CandidateTest.jsx';
 import ForgotPassword from './screens/ForgotPassword.js';
 import Login from './screens/Login.js';
 import Register from './screens/register';
 import Signup from './screens/Signup.js';
 import UpdateProfile from './screens/UpdateProfile.jsx';
-import CandidateTest from './screens/CandidatePanel/scenes/CandidateTest.jsx';
 
 function App() {
   return (
@@ -120,12 +121,7 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route 
-            path='/test'
-            element={<CandidateTest/ >}
-          />
-
-            
+          <Route path='/test' element={<CandidateTest />} />
         </Routes>
       </AuthProvider>
     </div>

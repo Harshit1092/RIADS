@@ -13,7 +13,7 @@ export const Choose = () => {
           </h2>
         </div>
         <div className='row  p-4'>
-          <div className="col-md-2"></div>
+          <div className='col-md-2'></div>
           <div className='col-md-4 h-auto rounded border-zinc-500 border-1 m-2 p-2'>
             <table className='w-full text-sm text-left '>
               <thead className=''>
@@ -74,7 +74,7 @@ export const Choose = () => {
               </thead>
             </table>
           </div>
-          <div className="col-md-2"></div>
+          <div className='col-md-2'></div>
           <div className='col-md-4 h-auto rounded border-zinc-500 border-1 m-2 p-2'>
             <table className='w-full text-sm text-left '>
               <thead className=''>
@@ -133,7 +133,7 @@ export const Choose = () => {
               </thead>
             </table>
           </div>
-          <div className="col-md-2"></div>
+          <div className='col-md-2'></div>
         </div>
       </div>
     </div>
