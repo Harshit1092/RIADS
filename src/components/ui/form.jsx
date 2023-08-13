@@ -14,6 +14,11 @@ import {
 } from '@material-ui/core';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { collection, addDoc } from "firebase/firestore";
+import {db} from '../../firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import {storage} from '../../firebase';
+import { v4 as uuidv4 } from 'uuid';
 
 const schema = yup.object().shape({
   name: yup
@@ -92,8 +97,125 @@ export default function Form() {
     },
   });
 
-  const onSubmit = (data) => {
+
+  const onSubmit = async (data, e) => {
+    console.log("heyy");
+
+    console.log(data.passportSizePhoto);
+    console.log(e.target.passportSizePhoto.files[0])
+    console.log(e.target.frontAdhaarCard.files[0])
+    console.log(e.target.backAdhaarCard.files[0])
+    console.log(e.target.frontDrivingLicense.files[0])
+    console.log(e.target.backDrivingLicense.files[0])
+
+
+    // Upload passport size photo
+    try {
+      const profilePicRef = ref(storage, `user-images/passport_size_photo/${uuidv4()}`)
+      await uploadBytes(profilePicRef, e.target.passportSizePhoto.files[0]).then((snapshot) => {
+                console.log(snapshot)
+                getDownloadURL(snapshot.ref).then(async(passport_URL) => {
+                  console.log(passport_URL)
+                  data.passportSizePhoto = passport_URL;
+                })
+              }).catch((er)=>{
+                window.alert("Couldn't upload your passport size photo")
+                console.log(er);
+              })
+
+      console.log("uploading passport size photo");
+    } catch (e) {
+      console.error("Error uploading passport size photo: ", e);
+    }
+
+    // Upload front picture of aadhaar card
+    try {
+      const frontAdhaarCardRef = ref(storage, `user-images/front_adhaar_card/${uuidv4()}`)
+      await uploadBytes(frontAdhaarCardRef, e.target.frontAdhaarCard.files[0]).then((snapshot) => {
+                console.log(snapshot)
+                getDownloadURL(snapshot.ref).then(async(front_adhaar_URL) => {
+                  console.log(front_adhaar_URL)
+                  data.frontAdhaarCard = front_adhaar_URL;
+                })
+              }).catch((er)=>{
+                window.alert("Couldn't upload your front picture of aadhaar card")
+                console.log(er);
+              })
+
+      console.log("uploading front picture of aadhaar card");
+    } catch (e) {
+      console.error("Error uploading front picture of aadhaar card: ", e);
+    }
+
+    // Upload back picture of aadhaar card
+    try {
+      const backAdhaarCardRef = ref(storage, `user-images/back_adhaar_card/${uuidv4()}`)
+      await uploadBytes(backAdhaarCardRef, e.target.backAdhaarCard.files[0]).then((snapshot) => {
+                console.log(snapshot)
+                getDownloadURL(snapshot.ref).then(async(back_adhaar_URL) => {
+                  console.log(back_adhaar_URL)
+                  data.backAdhaarCard = back_adhaar_URL;
+                })
+              }).catch((er)=>{
+                window.alert("Couldn't upload your back picture of aadhaar card")
+                console.log(er);
+              })
+
+      console.log("uploading back picture of aadhaar card");
+    } catch (e) {
+      console.error("Error uploading back picture of aadhaar card: ", e);
+    }
+
+    // Upload front picture of driving license
+    try {
+      const frontDrivingLicenseRef = ref(storage, `user-images/front_driving_license/${uuidv4()}`)
+      await uploadBytes(frontDrivingLicenseRef, e.target.frontDrivingLicense.files[0]).then((snapshot) => {
+                console.log(snapshot)
+                getDownloadURL(snapshot.ref).then(async(front_driving_URL) => {
+                  console.log(front_driving_URL)
+                  data.frontDrivingLicense = front_driving_URL;
+                })
+              }).catch((er)=>{
+                window.alert("Couldn't upload your front picture of driving license")
+                console.log(er);
+              })
+            
+      console.log("uploading front picture of driving license");
+    } catch (e) {
+      console.error("Error uploading front picture of driving license: ", e);
+    }
+
+    // Upload back picture of driving license
+    try {
+      const backDrivingLicenseRef = ref(storage, `user-images/back_driving_license/${uuidv4()}`)
+      await uploadBytes(backDrivingLicenseRef, e.target.backDrivingLicense.files[0]).then((snapshot) => {
+                console.log(snapshot) 
+                getDownloadURL(snapshot.ref).then(async(back_driving_URL) => {
+                  console.log(back_driving_URL)
+                  data.backDrivingLicense = back_driving_URL;
+                })
+              }).catch((er)=>{
+                window.alert("Couldn't upload your back picture of driving license")
+                console.log(er);
+              })
+
+      console.log("uploading back picture of driving license");
+    } catch (e) {
+      console.error("Error uploading back picture of driving license: ", e);
+    }
+
+
+    console.log("uploading data to firestore");
     console.log(data);
+      
+    // Upload data to firestore
+    try {
+      const docRef = await addDoc(collection(db, "users"), data);
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+
   };
 
   return (
@@ -220,6 +342,7 @@ export default function Form() {
                   {...field}
                   label='Passport Size Photo'
                   type='file'
+                  id='passport'
                   error={!!errors.passportSizePhoto}
                   helperText={errors.passportSizePhoto?.message}
                   fullWidth
@@ -335,6 +458,7 @@ export default function Form() {
                   {...field}
                   label='Front Picture of Aadhaar Card'
                   type='file'
+                  id = 'frontAdhaarCard'
                   error={!!errors.frontAdhaarCard}
                   helperText={errors.frontAdhaarCard?.message}
                   fullWidth
