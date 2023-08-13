@@ -48,7 +48,22 @@ const TableRow = ({ data }) => {
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
         <div className='text-sm text-gray-900'>
+          {data.age}
+        </div>
+      </td>
+      <td className='px-6 py-4 whitespace-nowrap'>
+        <div className='text-sm text-gray-900'>
+          {data.gender}
+        </div>
+      </td>
+      <td className='px-6 py-4 whitespace-nowrap'>
+        <div className='text-sm text-gray-900'>
           {data.phoneNumber}
+        </div>
+      </td>
+      <td className='px-6 py-4 whitespace-nowrap'>
+        <div className='text-sm text-gray-900'>
+          Registered
         </div>
       </td>
     </tr>
@@ -88,6 +103,7 @@ const Admin_CandidateProfile = () => {
   // console.log(currentUser.multiFactor.user.email);
   const emailRef = currentUser.multiFactor.user.email
 
+  // console.log(currentUser.multiFactor.user.uid);
 
   // Fetching data from database
   const [data, setData] = useState([]);
@@ -168,7 +184,21 @@ const Admin_CandidateProfile = () => {
                           scope='col'
                           className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
-                          DOB
+                          State
+                        </th>
+
+                        <th
+                          scope='col'
+                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          Age
+                        </th>
+
+                        <th
+                          scope='col'
+                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          Gender
                         </th>
 
                         <th
@@ -176,6 +206,13 @@ const Admin_CandidateProfile = () => {
                           className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
                           Phone number
+                        </th>
+
+                        <th
+                          scope='col'
+                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          Status
                         </th>
 
                       </tr>

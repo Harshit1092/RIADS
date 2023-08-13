@@ -81,6 +81,14 @@ const schema = yup.object().shape({
     .string()
     .required('Confirm password is required')
     .oneOf([yup.ref('password'), null], 'Passwords must match'),
+  age: yup
+    .number()
+    .required('Age is required')
+    .min(18, 'Age should be at least 18 years')
+    .max(60, 'Age should not exceed 60 years'),
+  gender: yup
+    .string()
+    .required("Gender is required")
 });
 
 const qualificationOptions = [
@@ -284,6 +292,46 @@ export default function Form() {
                     shrink: true,
                   }}
                 />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Controller
+              control={control}
+              name='age'
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label='Age'
+                  type='number'
+                  error={!!errors.dateOfBirth}
+                  helperText={errors.dateOfBirth?.message}
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Controller
+              control={control}
+              name='gender'
+              render={({ field }) => (
+                <FormControl error={!!errors.gender} fullWidth>
+                  <InputLabel>Select Gender</InputLabel>
+                  <Select {...field}>
+                    <MenuItem value='Male'>Male</MenuItem>
+                    <MenuItem value='Female'>Female</MenuItem>
+                    <MenuItem value='Other'>Other</MenuItem>
+                  </Select>
+                  {errors.gender && (
+                    <Typography color='error' variant='caption'>
+                      {errors.gender.message}
+                    </Typography>
+                  )}
+                </FormControl>
               )}
             />
           </Grid>
@@ -640,6 +688,7 @@ export default function Form() {
                 <TextField
                   {...field}
                   label='Password'
+                  type='password'
                   placeholder='Enter Password'
                   error={!!errors.password}
                   helperText={errors.password?.message}
@@ -656,6 +705,7 @@ export default function Form() {
                 <TextField
                   {...field}
                   label='Confirm Password'
+                  type='password'
                   placeholder='Confirm Password'
                   error={!!errors.confirmPassword}
                   helperText={errors.confirmPassword?.message}
