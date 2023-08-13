@@ -1,11 +1,59 @@
-import { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
+import { db } from '../../../firebase';
 import { mockDataRegistration } from '../data/mockData';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
+// import { where } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { useAuth } from '../../../contexts/AuthContext';
+
+
+
+const TableRow = ({ data }) => {
+  return (
+
+    <tr>
+      <td className='px-6 py-4 whitespace-nowrap'>
+        <div className='flex items-center'>
+          <div className='ml-4'>
+            <div className='text-sm font-medium text-gray-900'>
+              1
+            </div>
+          </div>
+        </div>
+      </td>
+      <td className='px-6 py-4 whitespace-nowrap'>
+        <div className='text-sm text-gray-900'>
+          {data.name}
+        </div>
+      </td>
+      <td className='px-6 py-4 whitespace-nowrap'>
+        <div className='text-sm text-gray-900'>
+          {data.fathersName}
+        </div>
+      </td>
+      <td className='px-6 py-4 whitespace-nowrap'>
+        <div className='text-sm text-gray-900'>
+          {data.email}
+        </div>
+      </td>
+      <td className='px-6 py-4 whitespace-nowrap'>
+        <div className='text-sm text-gray-900'>
+          {data.state}
+        </div>
+      </td>
+      <td className='px-6 py-4 whitespace-nowrap'>
+        <div className='text-sm text-gray-900'>
+          {data.phoneNumber}
+        </div>
+      </td>
+    </tr>
+  )
+}
 
 const Admin_CandidateProfile = () => {
   const theme = useTheme();
@@ -19,7 +67,7 @@ const Admin_CandidateProfile = () => {
   const column1Data = [
     'Candidate Name',
     'UID',
-    'Father/Mother Name',
+    'Father Name',
     'Age',
     'Gender',
     'Payment Status',
@@ -36,6 +84,35 @@ const Admin_CandidateProfile = () => {
     column2: mockDataRegistration[index],
   }));
 
+  const { currentUser } = useAuth();
+  // console.log(currentUser.multiFactor.user.email);
+  const emailRef = currentUser.multiFactor.user.email
+
+
+  // Fetching data from database
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const getData = async () => {
+      const q = query(
+        collection(db, 'users'),
+      );
+      await getDocs(q).then((response) => {
+        let data = response.docs.map((ele) => ({ ...ele.data() }));
+        setData(data);
+        // console.log(data);
+      });
+    };
+    getData();
+  },);
+
+  // console.log(data);
+
+
+
+
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
       <div>
@@ -51,6 +128,70 @@ const Admin_CandidateProfile = () => {
               View & Edit Candidate Profiles
             </Typography>
           </div>
+          <hr class='h-px my-8 bg-gray-200 border-2 dark:bg-gray-700'></hr>
+          {/*make table data */}
+          <div className='flex flex-col'>
+            <div className='-my-4 overflow-x-auto '>
+              <div className='py-6 align-middle inline-block min-w-full pl-4 pr-4'>
+                <div className='shadow  border-b border-gray-200 rounded-lg'>
+                  <table className='min-w-full divide-y divide-gray-200'>
+                    <thead className='bg-gray-50'>
+                      <tr>
+                        <th
+                          scope='col'
+                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          UID
+                        </th>
+                        <th
+                          scope='col'
+                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          Candidate Name
+                        </th>
+
+                        <th
+                          scope='col'
+                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          Father Name
+                        </th>
+
+                        <th
+                          scope='col'
+                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          Email
+                        </th>
+
+                        <th
+                          scope='col'
+                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          DOB
+                        </th>
+
+                        <th
+                          scope='col'
+                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          Phone number
+                        </th>
+
+                      </tr>
+                    </thead>
+                    <tbody className='bg-white divide-y divide-gray-200'>
+                        {data.map((ele) => (
+                        <TableRow data={ele} />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
         </div>
       </div>
     </div>

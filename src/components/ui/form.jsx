@@ -72,6 +72,15 @@ const schema = yup.object().shape({
   backDrivingLicense: yup
     .mixed()
     .required('Back picture of driving license is required'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password should be at least 8 characters')
+    .max(50, 'Password should not exceed 50 characters'),
+  confirmPassword: yup
+    .string()
+    .required('Confirm password is required')
+    .oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 
 const qualificationOptions = [
@@ -102,11 +111,11 @@ export default function Form() {
     console.log("heyy");
 
     console.log(data.passportSizePhoto);
-    console.log(e.target.passportSizePhoto.files[0])
-    console.log(e.target.frontAdhaarCard.files[0])
-    console.log(e.target.backAdhaarCard.files[0])
-    console.log(e.target.frontDrivingLicense.files[0])
-    console.log(e.target.backDrivingLicense.files[0])
+    console.log(e.target.passportSizePhoto.files[0]);
+    console.log(e.target.frontAdhaarCard.files[0]);
+    console.log(e.target.backAdhaarCard.files[0]);
+    console.log(e.target.frontDrivingLicense.files[0]);
+    console.log(e.target.backDrivingLicense.files[0]);
 
 
     // Upload passport size photo
@@ -619,6 +628,38 @@ export default function Form() {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Controller
+              control={control}
+              name='password'
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label='Password'
+                  placeholder='Enter Password'
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                  fullWidth
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Controller
+              control={control}
+              name='confirmPassword'
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label='Confirm Password'
+                  placeholder='Confirm Password'
+                  error={!!errors.confirmPassword}
+                  helperText={errors.confirmPassword?.message}
+                  fullWidth
                 />
               )}
             />

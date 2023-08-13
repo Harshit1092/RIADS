@@ -54,7 +54,7 @@ export const Header = () => {
                     type='button'
                     className='bg-[#c54545] px-3 py-2 text-white'
                   >
-                    Login / Signup
+                    Login
                   </button>
                 </Link>
                 {/* <Link to='/candidate-dashboard'>
