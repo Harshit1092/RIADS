@@ -125,10 +125,12 @@ export default function Form() {
     console.log(e.target.frontDrivingLicense.files[0]);
     console.log(e.target.backDrivingLicense.files[0]);
 
+    // set a unique id for each user
+    data.id = uuidv4();
 
     // Upload passport size photo
     try {
-      const profilePicRef = ref(storage, `user-images/passport_size_photo/${uuidv4()}`)
+      const profilePicRef = ref(storage, `user-images/passport_size_photo/${data.id}`)
       await uploadBytes(profilePicRef, e.target.passportSizePhoto.files[0]).then((snapshot) => {
                 console.log(snapshot)
                 getDownloadURL(snapshot.ref).then(async(passport_URL) => {
@@ -147,7 +149,7 @@ export default function Form() {
 
     // Upload front picture of aadhaar card
     try {
-      const frontAdhaarCardRef = ref(storage, `user-images/front_adhaar_card/${uuidv4()}`)
+      const frontAdhaarCardRef = ref(storage, `user-images/front_adhaar_card/${data.id}`)
       await uploadBytes(frontAdhaarCardRef, e.target.frontAdhaarCard.files[0]).then((snapshot) => {
                 console.log(snapshot)
                 getDownloadURL(snapshot.ref).then(async(front_adhaar_URL) => {
@@ -166,7 +168,7 @@ export default function Form() {
 
     // Upload back picture of aadhaar card
     try {
-      const backAdhaarCardRef = ref(storage, `user-images/back_adhaar_card/${uuidv4()}`)
+      const backAdhaarCardRef = ref(storage, `user-images/back_adhaar_card/${data.id}`)
       await uploadBytes(backAdhaarCardRef, e.target.backAdhaarCard.files[0]).then((snapshot) => {
                 console.log(snapshot)
                 getDownloadURL(snapshot.ref).then(async(back_adhaar_URL) => {
@@ -185,7 +187,7 @@ export default function Form() {
 
     // Upload front picture of driving license
     try {
-      const frontDrivingLicenseRef = ref(storage, `user-images/front_driving_license/${uuidv4()}`)
+      const frontDrivingLicenseRef = ref(storage, `user-images/front_driving_license/${data.id}`)
       await uploadBytes(frontDrivingLicenseRef, e.target.frontDrivingLicense.files[0]).then((snapshot) => {
                 console.log(snapshot)
                 getDownloadURL(snapshot.ref).then(async(front_driving_URL) => {
@@ -204,7 +206,7 @@ export default function Form() {
 
     // Upload back picture of driving license
     try {
-      const backDrivingLicenseRef = ref(storage, `user-images/back_driving_license/${uuidv4()}`)
+      const backDrivingLicenseRef = ref(storage, `user-images/back_driving_license/${data.id}`)
       await uploadBytes(backDrivingLicenseRef, e.target.backDrivingLicense.files[0]).then((snapshot) => {
                 console.log(snapshot) 
                 getDownloadURL(snapshot.ref).then(async(back_driving_URL) => {
@@ -221,6 +223,7 @@ export default function Form() {
       console.error("Error uploading back picture of driving license: ", e);
     }
 
+    data.status = "Pending";
 
     console.log("uploading data to firestore");
     console.log(data);
