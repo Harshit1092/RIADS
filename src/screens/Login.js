@@ -1,8 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
 import '../styles/Login.css';
+import { db } from '../firebase';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+// import { useEffect, useState } from 'react';
 
 import { useAuth } from '../contexts/AuthContext';
 
@@ -15,6 +18,24 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+
+  // admin email data list
+  const [adminEmail, setAdminEmail] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const q = query(
+        collection(db, 'admin'),
+      );
+      await getDocs(q).then((response) => {
+        let data = response.docs.map((ele) => ({ ...ele.data() }));
+        setAdminEmail(data);
+        // console.log(data);
+      });
+    };
+    getData();
+  }, );
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -24,12 +45,25 @@ export default function Login() {
 
       await login(emailRef.current.value, passwordRef.current.value);
 
-      const userType = document.querySelector(
-        'input[name="choice"]:checked'
-      ).value;
+      // check if the user is in the admin list
+      const admin = adminEmail.find((ele) => ele.email === emailRef.current.value);
+      if (admin) {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/candidate-dashboard');
+      }
 
-      navigate(`/${userType}-dashboard`);
-    } catch {
+      // const userType = document.querySelector(
+      //   'input[name="choice"]:checked'
+      // ).value;
+
+      // We have to get the user type from the database
+      // const userType = 'admin';
+
+
+      // navigate(`/${userType}-dashboard`);
+    } catch (e){
+      console.log(e);
       setError('Wrong email or password');
     }
     setLoading(false);
@@ -60,9 +94,9 @@ export default function Login() {
                   <p>Don't have an account?</p>
                   <Link
                     className='btn btn-white btn-outline-white mx-2'
-                    to='/signup'
+                    to='/register'
                   >
-                    Sign Up
+                    Register
                   </Link>
                   <Link className='btn btn-white btn-outline-white mx-2' to='/'>
                     Home
@@ -111,7 +145,7 @@ export default function Login() {
                       {loading ? 'Sending...' : 'Sign In'}
                     </button>
                   </div>
-                  <div className='form-group d-md-flex mt-3'>
+                  {/* <div className='form-group d-md-flex mt-3'>
                     <div className='w-50 text-left'>
                       <label className='checkbox-wrap checkbox-primary mb-0'>
                         Admin
@@ -135,7 +169,7 @@ export default function Login() {
                         <span className='checkmark' />
                       </label>
                     </div>
-                  </div>
+                  </div> */}
                   <div className='form-group d-md-flex float-left'>
                     <div className='text-md-right'>
                       <Link to='/forgot-password'>Forgot Password?</Link>
