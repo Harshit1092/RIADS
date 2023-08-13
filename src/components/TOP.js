@@ -4,7 +4,14 @@ export const TOP = () => {
   return (
     <div className='bg-[#c54545] text-white font-semibold  text-sm px-3'>
       <div className='row align-items-center'>
-        <div className='col-sm-4' style = {{display: 'flex', alignItems: 'center',justifyContent: 'center', }}>
+        <div
+          className='col-sm-4'
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <ul className='left-info '>
             <li>
               <a
