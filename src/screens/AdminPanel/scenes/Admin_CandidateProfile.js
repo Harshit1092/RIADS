@@ -8,8 +8,10 @@ import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
 // import { where } from 'firebase/firestore';
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { useAuth } from '../../../contexts/AuthContext';
+import Background from 'hero-slider/dist/components/Slide/Background';
+import { Style } from '@mui/icons-material';
 
 
 
@@ -21,7 +23,7 @@ const TableRow = ({ data }) => {
         <div className='flex items-center'>
           <div className='ml-4'>
             <div className='text-sm font-medium text-gray-900'>
-              1
+              {data.id}
             </div>
           </div>
         </div>
@@ -63,7 +65,42 @@ const TableRow = ({ data }) => {
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
         <div className='text-sm text-gray-900'>
-          Registered
+          <button
+            type='button'
+            className='px-3 py-2 text-white'
+            style={{ backgroundColor: data.status === 'Pending' ? 'red' : 'green' }}
+            onClick={() => {
+              console.log('clicked');
+
+              // change the status to approved
+              // update the database status to approved
+
+              const updateID = async () => {
+                const q = query(
+                  collection(db, 'users'),
+                  where('id', '==', data.id)
+                );
+                await getDocs(q).then( async (response) => {
+                  let data = response.docs.map((ele) => ({ ...ele.data() }));
+                  const ref = doc(db, 'users', response.docs[0].id);
+                  await updateDoc(ref, {
+                    status: 'Approved',
+                  });
+                });
+                
+              };
+
+              updateID();
+
+              
+              
+
+            }}
+
+          >
+            {data.status}
+          </button>          
+
         </div>
       </td>
     </tr>
