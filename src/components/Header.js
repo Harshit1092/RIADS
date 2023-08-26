@@ -33,10 +33,10 @@ export const Header = () => {
               >
                 <Nav.Link href='/'>Home</Nav.Link>
                 <Nav.Link href='/about'>About</Nav.Link>
-                <Nav.Link href='#'>Contact Us</Nav.Link>
+                <Nav.Link href='/contact'>Contact Us</Nav.Link>
                 <Nav.Link href='#'>Success Story</Nav.Link>
                 <Nav.Link href='#'>Take Mock Test</Nav.Link>
-                <Nav.Link href='#'>Download Study Material</Nav.Link>
+                <Nav.Link href='/study'>Download Study Material</Nav.Link>
                 <NavDropdown
                   title='Our Courses'
                   id='navbarScrollingDropdown'
@@ -48,7 +48,7 @@ export const Header = () => {
                     Refresher Course on HMV Drivers
                   </NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Link href='#'>Notice</Nav.Link>
+                <Nav.Link href='/notice'>Notice</Nav.Link>
                 <Link to='/login'>
                   <button
                     type='button'

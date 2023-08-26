@@ -244,7 +244,7 @@ export const Footer = () => {
         </div>
       </div>
 
-      <div class='bg-neutral-200 p-6 text-center dark:bg-neutral-700'>
+      {/* <div class='bg-neutral-200 p-6 text-center dark:bg-neutral-700'>
         <span>
           © 2023 Copyright Rupnagar Institute of Automotive & Driving Skills.
           Managed by{' '}
@@ -255,7 +255,7 @@ export const Footer = () => {
         >
           Smart Info Technology
         </a>
-      </div>
+      </div> */}
     </footer>
   );
 };

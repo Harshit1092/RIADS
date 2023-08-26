@@ -12,6 +12,9 @@ import { Home } from './components/Home.js';
 import PrivateRoute from './components/PrivateRoute.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import About from './screens/about';
+import Contact from './screens/contact.jsx';
+import Notice from './screens/notice.jsx';
+import Study from './screens/study.jsx';
 import Admin_Attendance from './screens/AdminPanel/scenes/Admin_Attendance.js';
 import Admin_CandidateProfile from './screens/AdminPanel/scenes/Admin_CandidateProfile.js';
 import Admin_Dashboard from './screens/AdminPanel/scenes/Admin_Dashboard.js';
@@ -36,8 +39,11 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/about' element={<About />} />
+          <Route path='/contact' element={<Contact />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/notice' element={<Notice />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/study' element={<Study />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route
