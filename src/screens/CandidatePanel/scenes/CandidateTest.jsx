@@ -4,13 +4,13 @@ import { nanoid } from 'nanoid';
 import { toast } from 'react-toastify';
 
 import { db } from '../../../firebase';
-import Sidebar from '../../AdminPanel/scenes/global/Sidebar';
-import Topbar from '../../AdminPanel/scenes/global/Topbar';
+// import Sidebar from '../../AdminPanel/scenes/global/Sidebar';
+// import Topbar from '../../AdminPanel/scenes/global/Topbar';
 import TestForm from './global/TestForm';
 
 const CandidateTest = () => {
   const [QuestionId, setQuestionId] = useState(0);
-  const [isSidebar, setIsSidebar] = useState(true);
+  // const [isSidebar, setIsSidebar] = useState(true);
   const [questions, setQuestions] = useState([]);
   const [language, setLanguage] = useState('English');
   const [answers, setAnswers] = useState(['']);
@@ -66,17 +66,18 @@ const CandidateTest = () => {
 
   return (
     <div className='min-h-screen h-full'>
-      <div>
+      {/* <div>
         <Topbar />
-      </div>
+      </div> */
+      <div className='m-20'></div>}
 
       <form
         onSubmit={handleSubmit}
         className='min-h-screen h-full flex flex-row'
       >
-        <div>
+        {/* <div>
           <Sidebar isSidebar={isSidebar} />
-        </div>
+        </div> */}
 
         <div className='w-full flex flex-col'>
           <div className='mx-auto flex justify-end w-2/3 '>

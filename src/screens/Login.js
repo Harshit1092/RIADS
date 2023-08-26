@@ -45,6 +45,8 @@ export default function Login() {
 
       await login(emailRef.current.value, passwordRef.current.value);
 
+      console.log(emailRef.current.value);  // email
+
       // check if the user is in the admin list
       const admin = adminEmail.find((ele) => ele.email === emailRef.current.value);
       if (admin) {
