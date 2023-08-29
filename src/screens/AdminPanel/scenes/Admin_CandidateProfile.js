@@ -1,74 +1,66 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Style } from '@mui/icons-material';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+// import { where } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
+import Background from 'hero-slider/dist/components/Slide/Background';
 
+import { useAuth } from '../../../contexts/AuthContext';
 import { db } from '../../../firebase';
 import { mockDataRegistration } from '../data/mockData';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
-// import { where } from 'firebase/firestore';
-import { collection, getDocs, orderBy, query, where, updateDoc, doc, getDoc } from 'firebase/firestore';
-import { useAuth } from '../../../contexts/AuthContext';
-import Background from 'hero-slider/dist/components/Slide/Background';
-import { Style } from '@mui/icons-material';
-
-
 
 const TableRow = ({ data }) => {
   return (
-
     <tr>
       <td className='px-6 py-4 whitespace-nowrap'>
         <div className='flex items-center'>
           <div className='ml-4'>
-            <div className='text-sm font-medium text-gray-900'>
-              {data.id}
-            </div>
+            <div className='text-sm font-medium text-gray-900'>{data.id}</div>
           </div>
         </div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.name}
-        </div>
+        <div className='text-sm text-gray-900'>{data.name}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.fathersName}
-        </div>
+        <div className='text-sm text-gray-900'>{data.fathersName}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.email}
-        </div>
+        <div className='text-sm text-gray-900'>{data.email}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.state}
-        </div>
+        <div className='text-sm text-gray-900'>{data.state}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.age}
-        </div>
+        <div className='text-sm text-gray-900'>{data.age}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.gender}
-        </div>
+        <div className='text-sm text-gray-900'>{data.gender}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.phoneNumber}
-        </div>
+        <div className='text-sm text-gray-900'>{data.phoneNumber}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
         <div className='text-sm text-gray-900'>
           <button
             type='button'
             className='px-3 py-2 text-white'
-            style={{ backgroundColor: data.status === 'Pending' ? 'red' : 'green' }}
+            style={{
+              backgroundColor: data.status === 'Pending' ? 'red' : 'green',
+            }}
             onClick={() => {
               console.log('clicked');
 
@@ -80,29 +72,26 @@ const TableRow = ({ data }) => {
                   collection(db, 'users'),
                   where('id', '==', data.id)
                 );
-                await getDocs(q).then( async (response) => {
+                await getDocs(q).then(async (response) => {
                   let data = response.docs.map((ele) => ({ ...ele.data() }));
                   const ref = doc(db, 'users', response.docs[0].id);
                   await updateDoc(ref, {
                     status: 'Approved',
                   });
                 });
-                
               };
 
               updateID();
 
             }}
-
           >
             {data.status}
-          </button>          
-
+          </button>
         </div>
       </td>
     </tr>
-  )
-}
+  );
+};
 
 const Admin_CandidateProfile = () => {
   const theme = useTheme();
@@ -135,7 +124,7 @@ const Admin_CandidateProfile = () => {
 
   const { currentUser } = useAuth();
   // console.log(currentUser.multiFactor.user.email);
-  const emailRef = currentUser.multiFactor.user.email
+  const emailRef = currentUser.multiFactor.user.email;
 
   // console.log(currentUser.multiFactor.user.uid);
 
@@ -146,9 +135,7 @@ const Admin_CandidateProfile = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const q = query(
-        collection(db, 'users'),
-      );
+      const q = query(collection(db, 'users'));
       await getDocs(q).then((response) => {
         let data = response.docs.map((ele) => ({ ...ele.data() }));
         setData(data);
@@ -156,12 +143,9 @@ const Admin_CandidateProfile = () => {
       });
     };
     getData();
-  },);
+  });
 
   // console.log(data);
-
-
-
 
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
@@ -248,11 +232,10 @@ const Admin_CandidateProfile = () => {
                         >
                           Status
                         </th>
-
                       </tr>
                     </thead>
                     <tbody className='bg-white divide-y divide-gray-200'>
-                        {data.map((ele) => (
+                      {data.map((ele) => (
                         <TableRow data={ele} />
                       ))}
                     </tbody>
@@ -261,8 +244,6 @@ const Admin_CandidateProfile = () => {
               </div>
             </div>
           </div>
-
-
         </div>
       </div>
     </div>

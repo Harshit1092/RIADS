@@ -1,35 +1,41 @@
-import { useState, Component, useEffect } from 'react';
+import { Component, useEffect, useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+// import * as firebase from "firebase";
+import {
+  Button,
+  Container,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@material-ui/core';
+import Modal from '@material-ui/core/Modal';
 // import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 // import { useForm } from 'react-hook-form';
 import { Controller, set, useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
-// import * as firebase from "firebase";
-import {
-    Button,
-    Container,
-    FormControl,
-    Grid,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
-} from '@material-ui/core';
+import * as yup from 'yup';
 
+import { db, storage } from '../../../firebase';
 import { mockDataResult } from '../data/mockData';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
 
-import { collection, addDoc, getDocs, query, where, doc, deleteDoc } from "firebase/firestore";
-import { db } from '../../../firebase';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from '../../../firebase';
-
-import Modal from '@material-ui/core/Modal';
 // import { Controller } from 'react-hook-form';
 
 const schema = yup.object().shape({
@@ -47,12 +53,15 @@ const schema = yup.object().shape({
     img: yup.string().required('img is required'),
 });
 
-
-
 const Admin_Result = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const [isSidebar, setIsSidebar] = useState(true);
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-    const theme = useTheme();
+  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [isSidebar, setIsSidebar] = useState(true);
 
@@ -142,7 +151,14 @@ const Admin_Result = () => {
                 }
             };
 
-            try {
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
                 console.log("heyy");
 
@@ -166,9 +182,14 @@ const Admin_Result = () => {
             }
 
 
-            setLoading(false);
+      data.id = uuidv4();
+
+      const uploadData = async () => {
+        try {
+          const docRef = await addDoc(collection(db, 'study'), data);
+          console.log('Document written with ID: ', docRef.id);
         } catch (e) {
-            console.log(e);
+          console.error('Error adding document: ', e);
         }
     };
 
@@ -937,14 +958,61 @@ const Admin_Result = () => {
 
                                         ))}
                                     </table>
+
                                 </div>
+                              </div>
                             </div>
-                        </div>
-                    </div>
+                          </td>
+                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                            <a
+                              href={info.img}
+                              className='text-indigo-600 hover:text-indigo-900'
+                            >
+                              Download
+                            </a>
+                          </td>
+                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                            <Button
+                              variant='contained'
+                              color='secondary'
+                              type='submit'
+                              onClick={async () => {
+                                console.log(info.id);
+                                // get the document id and delete it
+                                const q = query(
+                                  collection(db, 'study'),
+                                  where('id', '==', info.id)
+                                );
+                                await getDocs(q).then(async (response) => {
+                                  let data = response.docs.map((ele) => ({
+                                    ...ele.data(),
+                                  }));
+                                  const ref = doc(
+                                    db,
+                                    'study',
+                                    response.docs[0].id
+                                  );
+                                  await deleteDoc(ref);
+                                  // Refresh the page
+                                  window.location.reload();
+                                });
+                              }}
+                            >
+                              Delete
+                            </Button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    ))}
+                  </table>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Admin_Result;

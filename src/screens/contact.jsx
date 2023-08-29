@@ -1,3 +1,4 @@
+import { Map } from '@googlemaps/react-wrapper';
 import { Carousel, Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -5,7 +6,7 @@ import { Choose } from '../components/Choose.js';
 import { Footer } from '../components/Footer.js';
 import { Header } from '../components/Header.js';
 import { TOP } from '../components/TOP.js';
-import { Map } from '@googlemaps/react-wrapper'
+
 // import boxicons from 'boxicons';
 
 export default function Contact() {
@@ -56,24 +57,26 @@ export default function Contact() {
               textAlign: 'center',
             }}/> */}
             {/* <i class='bx bx-user'></i> */}
-               <h4>Contact Number</h4>
-               <p> <a href="tel:01881221167">01881221167</a></p>
-                                 <p><a href="tel:9317703065">9317703065</a></p>
-                           
+            <h4>Contact Number</h4>
+            <p>
+              {' '}
+              <a href='tel:01881221167'>01881221167</a>
+            </p>
+            <p>
+              <a href='tel:9317703065'>9317703065</a>
+            </p>
           </Col>
           <Col className='col-lg-4 col-md-6 col-sm-12 center text-center'>
-
-          {/* <i class="bx bxs-location-plus"></i> */}
-               <h4>Our Location</h4>
-               <p>Govt. I.T.I Nangal Road Ropar,Rupnagar, Punjab - 140001</p>
-            
+            {/* <i class="bx bxs-location-plus"></i> */}
+            <h4>Our Location</h4>
+            <p>Govt. I.T.I Nangal Road Ropar,Rupnagar, Punjab - 140001</p>
           </Col>
           <Col className='col-lg-4 col-md-6 col-sm-12 center text-center'>
-            
-          {/* <i class="bx bxs-envelope"></i> */}
-               <h4>Email ID</h4>
-               <p><a href="riads.rupnagar@gmail.com">riads.rupnagar@gmail.com</a></p>
-            
+            {/* <i class="bx bxs-envelope"></i> */}
+            <h4>Email ID</h4>
+            <p>
+              <a href='riads.rupnagar@gmail.com'>riads.rupnagar@gmail.com</a>
+            </p>
           </Col>
         </Row>
       </Container>

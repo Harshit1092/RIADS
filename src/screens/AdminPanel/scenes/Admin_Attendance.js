@@ -1,16 +1,97 @@
-import { useState } from 'react';
-import { Box, Typography, useTheme } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { useEffect, useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Grid, TextField, Typography, useTheme } from '@mui/material';
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
+import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
-import { mockDataAttendance } from '../data/mockData';
+import { db } from '../../../firebase';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
 
-const Admin_Attendance = () => {
+const schema = yup.object().shape({
+  batchFrom: yup.date().required('Batch from date is required'),
+  batchTo: yup.date().required('Batch to date is required'),
+  attendanceDate: yup.date().required('Attendance date is required'),
+});
+
+export default function Admin_Attendance() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
+  const [batchFrom, setBatchFrom] = useState(new Date());
+  const [batchTo, setBatchTo] = useState(new Date());
+  const [attendanceDate, setAttendanceDate] = useState(new Date());
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const q = query(collection(db, 'users'));
+      await getDocs(q).then((response) => {
+        let data = response.docs.map((ele) => ({ ...ele.data() }));
+        setData(data);
+      });
+    };
+    getData();
+  });
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const f = new Intl.DateTimeFormat('en-uk', {
+    dateStyle: 'short',
+  });
+
+  function onSubmit(data) {
+    setBatchFrom(data.batchFrom);
+    setAttendanceDate(data.attendanceDate);
+    setBatchTo(data.batchTo);
+  }
+
+  const toggleAttendance = async (userId) => {
+    const updatedUsers = data.map((user) => {
+      if (user.id === userId) {
+        if (!user.attendance) {
+          user.attendance = [];
+        }
+
+        user.attendance.push(f.format(attendanceDate));
+      }
+
+      return user;
+    });
+
+    setData(updatedUsers);
+
+    try {
+      // Fetch the user document ID from Firestore
+      const q = query(collection(db, 'users'), where('id', '==', userId));
+      const querySnapshot = await getDocs(q);
+      const userDocumentId = querySnapshot.docs[0].id;
+
+      // Update the attendance property of the user document
+      const userDocRef = doc(db, 'users', userDocumentId);
+      await updateDoc(userDocRef, {
+        attendance: updatedUsers.find((user) => user.id === userId).attendance,
+      });
+    } catch (error) {
+      alert('Firebase error updating attendance 🥺');
+      console.error('Error updating attendance:', error);
+    }
+  };
 
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
@@ -28,7 +109,81 @@ const Admin_Attendance = () => {
             </Typography>
           </div>
           <hr class='h-px my-8 bg-gray-200 border-2 dark:bg-gray-700'></hr>
-
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className='p-4 flex gap-4 items-center justify-start flex-col md:flex-row'>
+              <div className='flex items-start justify-center'>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    control={control}
+                    name='batchFrom'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='Batch from'
+                        type='date'
+                        error={!!errors.batchFrom}
+                        helperText={errors.batchFrom?.message}
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+              </div>
+              <div className='flex items-start justify-center'>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    control={control}
+                    name='batchTo'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='Batch to'
+                        type='date'
+                        error={!!errors.batchTo}
+                        helperText={errors.batchTo?.message}
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+              </div>
+              <div className='flex items-start justify-center'>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    control={control}
+                    name='attendanceDate'
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='Attendance date'
+                        type='date'
+                        error={!!errors.attendanceDate}
+                        helperText={errors.attendanceDate?.message}
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+              </div>
+              <div className='flex items-start justify-center'>
+                <button
+                  type='submit'
+                  class='focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
           <div className='flex flex-col'>
             <div className='-my-4 overflow-x-auto '>
               <div className='py-6 align-middle inline-block min-w-full pl-4 pr-4'>
@@ -81,36 +236,18 @@ const Admin_Attendance = () => {
                           scope='col'
                           className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
-                          Hours Attended
-                        </th>
-                        <th
-                          scope='col'
-                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
-                        >
-                          Batch
-                        </th>
-                        <th
-                          scope='col'
-                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
-                        >
-                          Click to Download Attendance Certificate
-                        </th>
-                        <th
-                          scope='col'
-                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
-                        >
-                          Send Email to Download Certificate
+                          Attendance
                         </th>
                       </tr>
                     </thead>
                     <tbody className='bg-white divide-y divide-gray-200'>
-                      {mockDataAttendance.map((mockDataAttendance) => (
-                        <tr key={mockDataAttendance.uid}>
+                      {data.map((user) => (
+                        <tr key={user.id}>
                           <td className='px-6 py-4 whitespace-nowrap'>
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataAttendance.uid}
+                                  {user.id}
                                 </div>
                               </div>
                             </div>
@@ -119,37 +256,28 @@ const Admin_Attendance = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataAttendance.name}
+                                  {user.name}
                                 </div>
                               </div>
                             </div>
                           </td>
-                          <tr>
-                            <td className='px-6 py-4 whitespace-nowrap'>
-                              <div className='flex items-center'>
-                                <div className='ml-4'>
-                                  <div className='text-sm font-medium text-gray-900'>
-                                    {mockDataAttendance.from}
+                          <td className='px-6 py-4 whitespace-nowrap'>
+                            <div className='flex justify-center flex-col'>
+                              <div className='ml-4'>
+                                <div className='text-sm font-medium text-gray-900'>
+                                  <div className='flex justify-start items-center gap-20'>
+                                    <div>{f.format(batchFrom)}</div>
+                                    <div>{f.format(batchTo)}</div>
                                   </div>
                                 </div>
                               </div>
-                            </td>
-                            <td className='px-6 py-4 whitespace-nowrap'>
-                              <div className='flex items-center'>
-                                <div className='ml-4'>
-                                  <div className='text-sm font-medium text-gray-900'>
-                                    {mockDataAttendance.to}
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                          </tr>
-
+                            </div>
+                          </td>
                           <td className='px-6 py-4 whitespace-nowrap'>
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataAttendance.day}
+                                  {f.format(attendanceDate)}
                                 </div>
                               </div>
                             </div>
@@ -158,35 +286,29 @@ const Admin_Attendance = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataAttendance.hours}
+                                  {user.attendance &&
+                                  user.attendance.find(
+                                    (entry) =>
+                                      entry === f.format(attendanceDate)
+                                  ) ? (
+                                    <button
+                                      type='button'
+                                      className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'
+                                    >
+                                      Attendance marked!
+                                    </button>
+                                  ) : (
+                                    <button
+                                      type='button'
+                                      className='focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
+                                      onClick={() => toggleAttendance(user.id)}
+                                    >
+                                      Mark attendance
+                                    </button>
+                                  )}
                                 </div>
                               </div>
                             </div>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='flex items-center'>
-                              <div className='ml-4'>
-                                <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataAttendance.batch}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
-                            <a
-                              href='#'
-                              className='text-indigo-600 hover:text-indigo-900'
-                            >
-                              Download
-                            </a>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
-                            <a
-                              href='#'
-                              className='text-indigo-600 hover:text-indigo-900'
-                            >
-                              Email
-                            </a>
                           </td>
                         </tr>
                       ))}
@@ -200,6 +322,4 @@ const Admin_Attendance = () => {
       </div>
     </div>
   );
-};
-
-export default Admin_Attendance;
+}
