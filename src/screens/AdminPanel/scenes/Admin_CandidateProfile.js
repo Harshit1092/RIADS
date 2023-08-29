@@ -82,6 +82,7 @@ const TableRow = ({ data }) => {
               };
 
               updateID();
+
             }}
           >
             {data.status}
