@@ -12,17 +12,23 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { Link, useNavigate } from 'react-router-dom';
-import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { useAuth } from '../../contexts/AuthContext';
-import { Controller, set, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { addDoc } from "firebase/firestore";
-import { db } from '../../firebase';
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from '../../firebase';
+import { Controller, set, useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import * as yup from 'yup';
 
+import { useAuth } from '../../contexts/AuthContext';
+import { db, storage } from '../../firebase';
 
 const schema = yup.object().shape({
   name: yup
@@ -102,7 +108,7 @@ const qualificationOptions = [
   'Other',
 ];
 
-export default function Form({ uid , update}) {
+export default function Form({ uid, update }) {
   const {
     handleSubmit,
     control,
@@ -129,26 +135,41 @@ export default function Form({ uid , update}) {
   const [backDrivingLicenseUrl, setBackDrivingLicenseUrl] = useState('');
   const [passportSizePhotoUrl, setPassportSizePhotoUrl] = useState('');
 
-
   useEffect(() => {
     const getData = async () => {
-      const q = query(
-        collection(db, 'users'),
-        where('id', '==', uid)
-      );
+      const q = query(collection(db, 'users'), where('id', '==', uid));
       await getDocs(q).then(async (response) => {
         let data = response.docs[0].data();
         // console.log(data);
         setData(data);
-        const frontAdhaarCardRef = ref(storage, `user-images/front_adhaar_card/${data.id}`);
-        const backAdhaarCardRef = ref(storage, `user-images/back_adhaar_card/${data.id}`);
-        const frontDrivingLicenseRef = ref(storage, `user-images/front_driving_license/${data.id}`);
-        const backDrivingLicenseRef = ref(storage, `user-images/back_driving_license/${data.id}`);
-        const passportSizePhotoRef = ref(storage, `user-images/passport_size_photo/${data.id}`);
+        const frontAdhaarCardRef = ref(
+          storage,
+          `user-images/front_adhaar_card/${data.id}`
+        );
+        const backAdhaarCardRef = ref(
+          storage,
+          `user-images/back_adhaar_card/${data.id}`
+        );
+        const frontDrivingLicenseRef = ref(
+          storage,
+          `user-images/front_driving_license/${data.id}`
+        );
+        const backDrivingLicenseRef = ref(
+          storage,
+          `user-images/back_driving_license/${data.id}`
+        );
+        const passportSizePhotoRef = ref(
+          storage,
+          `user-images/passport_size_photo/${data.id}`
+        );
         const frontAdhaarCardUrl = await getDownloadURL(frontAdhaarCardRef);
         const backAdhaarCardUrl = await getDownloadURL(backAdhaarCardRef);
-        const frontDrivingLicenseUrl = await getDownloadURL(frontDrivingLicenseRef);
-        const backDrivingLicenseUrl = await getDownloadURL(backDrivingLicenseRef);
+        const frontDrivingLicenseUrl = await getDownloadURL(
+          frontDrivingLicenseRef
+        );
+        const backDrivingLicenseUrl = await getDownloadURL(
+          backDrivingLicenseRef
+        );
         const passportSizePhotoUrl = await getDownloadURL(passportSizePhotoRef);
         setFrontAdhaarCardUrl(frontAdhaarCardUrl);
         setBackAdhaarCardUrl(backAdhaarCardUrl);
@@ -157,9 +178,12 @@ export default function Form({ uid , update}) {
         setPassportSizePhotoUrl(passportSizePhotoUrl);
         setValue('name', data.name);
         setValue('fathersName', data.fathersName);
-        setValue('dateOfBirth', data.dateOfBirth.toDate().toISOString().split('T')[0]);
+        setValue(
+          'dateOfBirth',
+          data.dateOfBirth.toDate().toISOString().split('T')[0]
+        );
         setValue('age', data.age);
-        setValue('email',data.email);
+        setValue('email', data.email);
         setValue('city', data.city);
         setValue('pinCode', data.pinCode);
         setValue('state', data.state);
@@ -168,8 +192,14 @@ export default function Form({ uid , update}) {
         setValue('phoneNumber', data.phoneNumber);
         setValue('adhaarCardNumber', data.adhaarCardNumber);
         setValue('drivingLicenseNumber', data.drivingLicenseNumber);
-        setValue('licenseIssueDate', data.licenseIssueDate.toDate().toISOString().split('T')[0]);
-        setValue('licenseExpiryDate', data.licenseExpiryDate.toDate().toISOString().split('T')[0]);
+        setValue(
+          'licenseIssueDate',
+          data.licenseIssueDate.toDate().toISOString().split('T')[0]
+        );
+        setValue(
+          'licenseExpiryDate',
+          data.licenseExpiryDate.toDate().toISOString().split('T')[0]
+        );
         setValue('password', data.password);
         setValue('confirmPassword', data.password);
         setValue('qualification', data.qualification);
@@ -178,10 +208,10 @@ export default function Form({ uid , update}) {
         setValue('gender', data?.gender || '');
       });
     };
-    if(uid){
+    if (uid) {
       getData();
     }
-  }, [uid,setValue]);
+  }, [uid, setValue]);
 
   // const LoadingIndicator = props => {
   //   const { promiseInProgress } = usePromiseTracker();
@@ -190,8 +220,6 @@ export default function Form({ uid , update}) {
   //     <h1>Submitting!</h1>
   //   );
   // }
-
-
 
   const new_onSubmit = async (data, e) => {
     try {
@@ -376,8 +404,7 @@ export default function Form({ uid , update}) {
       //   setLoading(false);
       // }
       setLoading(false);
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
     }
   };
@@ -386,7 +413,7 @@ export default function Form({ uid , update}) {
       setError('');
       setLoading(true);
 
-      console.log("heyy");
+      console.log('heyy');
 
       console.log(data.passportSizePhoto);
       console.log(e.target.passportSizePhoto.files[0]);
@@ -398,130 +425,158 @@ export default function Form({ uid , update}) {
       const uploadData = async () => {
         // Upload data to firestore
         try {
-          const q = query(
-            collection(db, 'users'),
-            where('id', '==', uid)
-          ); // Assuming `uid` is defined in your component
+          const q = query(collection(db, 'users'), where('id', '==', uid)); // Assuming `uid` is defined in your component
           await getDocs(q).then(async (response) => {
             const ref = doc(db, 'users', response.docs[0].id);
             await updateDoc(ref, data);
           });
-          console.log("Document updated with ID: ", uid);
+          console.log('Document updated with ID: ', uid);
         } catch (e) {
-          console.error("Error adding document: ", e);
+          console.error('Error adding document: ', e);
         }
       };
 
-
       // Upload passport size photo
       try {
-        const profilePicRef = ref(storage, `user-images/passport_size_photo/${data.id}`)
-        await uploadBytes(profilePicRef, e.target.passportSizePhoto.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (passport_URL) => {
-            console.log(passport_URL)
-            data.passportSizePhoto = passport_URL;
+        const profilePicRef = ref(
+          storage,
+          `user-images/passport_size_photo/${data.id}`
+        );
+        await uploadBytes(profilePicRef, e.target.passportSizePhoto.files[0])
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (passport_URL) => {
+              console.log(passport_URL);
+              data.passportSizePhoto = passport_URL;
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload your passport size photo")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert("Couldn't upload your passport size photo");
+            console.log(er);
+          });
 
-        console.log("uploading passport size photo");
+        console.log('uploading passport size photo');
       } catch (e) {
-        console.error("Error uploading passport size photo: ", e);
+        console.error('Error uploading passport size photo: ', e);
       }
 
       // Upload front picture of aadhaar card
       try {
-        const frontAdhaarCardRef = ref(storage, `user-images/front_adhaar_card/${data.id}`)
-        await uploadBytes(frontAdhaarCardRef, e.target.frontAdhaarCard.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (front_adhaar_URL) => {
-            console.log(front_adhaar_URL)
-            data.frontAdhaarCard = front_adhaar_URL;
+        const frontAdhaarCardRef = ref(
+          storage,
+          `user-images/front_adhaar_card/${data.id}`
+        );
+        await uploadBytes(frontAdhaarCardRef, e.target.frontAdhaarCard.files[0])
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (front_adhaar_URL) => {
+              console.log(front_adhaar_URL);
+              data.frontAdhaarCard = front_adhaar_URL;
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload your front picture of aadhaar card")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert("Couldn't upload your front picture of aadhaar card");
+            console.log(er);
+          });
 
-        console.log("uploading front picture of aadhaar card");
+        console.log('uploading front picture of aadhaar card');
       } catch (e) {
-        console.error("Error uploading front picture of aadhaar card: ", e);
+        console.error('Error uploading front picture of aadhaar card: ', e);
       }
 
       // Upload back picture of aadhaar card
       try {
-        const backAdhaarCardRef = ref(storage, `user-images/back_adhaar_card/${data.id}`)
-        await uploadBytes(backAdhaarCardRef, e.target.backAdhaarCard.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (back_adhaar_URL) => {
-            console.log(back_adhaar_URL)
-            data.backAdhaarCard = back_adhaar_URL;
+        const backAdhaarCardRef = ref(
+          storage,
+          `user-images/back_adhaar_card/${data.id}`
+        );
+        await uploadBytes(backAdhaarCardRef, e.target.backAdhaarCard.files[0])
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (back_adhaar_URL) => {
+              console.log(back_adhaar_URL);
+              data.backAdhaarCard = back_adhaar_URL;
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload your back picture of aadhaar card")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert("Couldn't upload your back picture of aadhaar card");
+            console.log(er);
+          });
 
-        console.log("uploading back picture of aadhaar card");
+        console.log('uploading back picture of aadhaar card');
       } catch (e) {
-        console.error("Error uploading back picture of aadhaar card: ", e);
+        console.error('Error uploading back picture of aadhaar card: ', e);
       }
 
       // Upload front picture of driving license
       try {
-        const frontDrivingLicenseRef = ref(storage, `user-images/front_driving_license/${data.id}`)
-        await uploadBytes(frontDrivingLicenseRef, e.target.frontDrivingLicense.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (front_driving_URL) => {
-            console.log(front_driving_URL)
-            data.frontDrivingLicense = front_driving_URL;
+        const frontDrivingLicenseRef = ref(
+          storage,
+          `user-images/front_driving_license/${data.id}`
+        );
+        await uploadBytes(
+          frontDrivingLicenseRef,
+          e.target.frontDrivingLicense.files[0]
+        )
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (front_driving_URL) => {
+              console.log(front_driving_URL);
+              data.frontDrivingLicense = front_driving_URL;
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload your front picture of driving license")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert(
+              "Couldn't upload your front picture of driving license"
+            );
+            console.log(er);
+          });
 
-        console.log("uploading front picture of driving license");
+        console.log('uploading front picture of driving license');
       } catch (e) {
-        console.error("Error uploading front picture of driving license: ", e);
+        console.error('Error uploading front picture of driving license: ', e);
       }
 
       // Upload back picture of driving license
       try {
-        const backDrivingLicenseRef = ref(storage, `user-images/back_driving_license/${data.id}`)
-        await uploadBytes(backDrivingLicenseRef, e.target.backDrivingLicense.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (back_driving_URL) => {
-            console.log(back_driving_URL)
-            data.backDrivingLicense = back_driving_URL;
-            await uploadData();
+        const backDrivingLicenseRef = ref(
+          storage,
+          `user-images/back_driving_license/${data.id}`
+        );
+        await uploadBytes(
+          backDrivingLicenseRef,
+          e.target.backDrivingLicense.files[0]
+        )
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (back_driving_URL) => {
+              console.log(back_driving_URL);
+              data.backDrivingLicense = back_driving_URL;
+              await uploadData();
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload your back picture of driving license")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert(
+              "Couldn't upload your back picture of driving license"
+            );
+            console.log(er);
+          });
 
-        console.log("uploading back picture of driving license");
+        console.log('uploading back picture of driving license');
       } catch (e) {
-        console.error("Error uploading back picture of driving license: ", e);
+        console.error('Error uploading back picture of driving license: ', e);
       }
 
-      data.status = "Pending";
+      data.status = 'Pending';
 
-      console.log("uploading data to firestore");
+      console.log('uploading data to firestore');
       console.log(data);
-
-      
 
       // finally {
       //   setLoading(false);
       // }
       setLoading(false);
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
     }
   };
@@ -546,7 +601,11 @@ export default function Form({ uid , update}) {
           Registration Form
         </Typography>
       </Box>
-      <form onSubmit={handleSubmit(update === 'true' ? existing_onSubmit : new_onSubmit )}>
+      <form
+        onSubmit={handleSubmit(
+          update === 'true' ? existing_onSubmit : new_onSubmit
+        )}
+      >
         <Grid container spacing={6}>
           <Grid item xs={12} sm={4}>
             <Controller
@@ -560,7 +619,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.name}
                   helperText={errors.name?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -577,7 +636,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.fathersName}
                   helperText={errors.fathersName?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -621,7 +680,7 @@ export default function Form({ uid , update}) {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-          <Controller
+            <Controller
               control={control}
               name='gender'
               render={({ field }) => (
@@ -653,7 +712,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.phoneNumber}
                   helperText={errors.phoneNumber?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -670,7 +729,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.email}
                   helperText={errors.email?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -731,7 +790,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.address}
                   helperText={errors.address?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -748,7 +807,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.city}
                   helperText={errors.city?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -765,7 +824,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.pinCode}
                   helperText={errors.pinCode?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -782,7 +841,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.state}
                   helperText={errors.state?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -799,7 +858,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.adhaarCardNumber}
                   helperText={errors.adhaarCardNumber?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -816,7 +875,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.district}
                   helperText={errors.district?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -874,7 +933,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.drivingLicenseNumber}
                   helperText={errors.drivingLicenseNumber?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -1013,7 +1072,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.password}
                   helperText={errors.password?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -1031,7 +1090,7 @@ export default function Form({ uid , update}) {
                   error={!!errors.confirmPassword}
                   helperText={errors.confirmPassword?.message}
                   fullWidth
-                  InputLabelProps={{shrink: true,}}
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
