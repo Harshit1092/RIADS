@@ -92,9 +92,6 @@ const TableRow = ({ data }) => {
 
               updateID();
 
-              
-              
-
             }}
 
           >
