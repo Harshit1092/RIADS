@@ -1,25 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import Modal from '@material-ui/core/Modal';
 import { Style } from '@mui/icons-material';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { db } from '../../../firebase';
+// import { where } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
+import Background from 'hero-slider/dist/components/Slide/Background';
+import { Controller, set, useForm } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
+import * as yup from 'yup';
+
+import Form from '../../../components/ui/form';
+import { useAuth } from '../../../contexts/AuthContext';
+import { db, storage } from '../../../firebase';
 import { mockDataRegistration } from '../data/mockData';
 import { tokens } from '../theme';
-import * as yup from 'yup';
-import { storage } from '../../../firebase';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, set, useForm } from 'react-hook-form';
-// import { where } from 'firebase/firestore';
-import { collection, getDocs, orderBy, query, where, updateDoc, doc, getDoc, addDoc } from 'firebase/firestore';
-import { useAuth } from '../../../contexts/AuthContext';
-import Background from 'hero-slider/dist/components/Slide/Background';
-import { v4 as uuidv4 } from 'uuid';
-import Form from '../../../components/ui/form';
-import Modal from '@material-ui/core/Modal';
-// import { Controller } from 'react-hook-form';
 
+// import { Controller } from 'react-hook-form';
 
 const TableRow = ({ data }) => {
   const [open, setOpen] = useState(false);
@@ -89,52 +99,50 @@ const TableRow = ({ data }) => {
                     status: 'Approved',
                   });
                 });
-
               };
 
               updateID();
-
-
-
-
             }}
           >
             {data.status}
           </button>
-
         </div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
         <div className='text-sm text-gray-900'>
-          <button className='px-3 py-2 text-white' onClick={handleOpen} style={{ backgroundColor: 'gray' }}>Edit Profile</button>
+          <button
+            className='px-3 py-2 text-white'
+            onClick={handleOpen}
+            style={{ backgroundColor: 'gray' }}
+          >
+            Edit Profile
+          </button>
         </div>
         <Modal onClose={handleClose} open={open}>
           <Box
             sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
               width: 900,
-              bgcolor: "background.paper",
-              border: "2px solid #000",
+              bgcolor: 'background.paper',
+              border: '2px solid #000',
               boxShadow: 24,
               p: 4,
-              maxHeight: "80%", // Adjust this value as needed
-              overflow: "auto",
+              maxHeight: '80%', // Adjust this value as needed
+              overflow: 'auto',
             }}
           >
             <div>
-              <Form uid ={data.id} update={'true'}/>
+              <Form uid={data.id} update={'true'} />
             </div>
           </Box>
         </Modal>
-
       </td>
     </tr>
-  )
-}
-
+  );
+};
 
 const Admin_CandidateProfile = () => {
   const theme = useTheme();
@@ -282,7 +290,6 @@ const Admin_CandidateProfile = () => {
                         >
                           Edit Profile
                         </th>
-
                       </tr>
                     </thead>
                     <tbody className='bg-white divide-y divide-gray-200'>
