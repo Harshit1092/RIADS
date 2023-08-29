@@ -11,7 +11,6 @@ const Candidate_Result = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
-  
 
   return (
     <div className='flex flex-col h-screen bg-gray-100'>

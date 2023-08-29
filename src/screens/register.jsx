@@ -21,7 +21,7 @@ export default function Register() {
         </Carousel.Item>
       </Carousel>
       <Regis />
-      <Form update={'false'}/>
+      <Form update={'false'} />
       <Footer />
     </>
   );

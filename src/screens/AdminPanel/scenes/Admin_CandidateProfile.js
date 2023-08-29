@@ -15,20 +15,8 @@ import { Controller, set, useForm } from 'react-hook-form';
 import { collection, getDocs, orderBy, query, where, updateDoc, doc, getDoc, addDoc } from 'firebase/firestore';
 import { useAuth } from '../../../contexts/AuthContext';
 import Background from 'hero-slider/dist/components/Slide/Background';
-import { Style } from '@mui/icons-material';
 import { v4 as uuidv4 } from 'uuid';
 import Form from '../../../components/ui/form';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import {
-  Button,
-  Container,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
 // import { Controller } from 'react-hook-form';
 

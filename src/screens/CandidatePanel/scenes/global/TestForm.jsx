@@ -12,7 +12,7 @@ const TestForm = ({ answers, setAnswers, data }) => {
     // console.log(optionIndex);
     // console.log(QuestionId)
     console.log(answers);
-    const newAnswers =  { ...answers };
+    const newAnswers = { ...answers };
     console.log(newAnswers);
     newAnswers[QuestionId] = QuestionOptions[optionIndex];
     // console.log(newAnswers);
@@ -22,7 +22,9 @@ const TestForm = ({ answers, setAnswers, data }) => {
 
   return (
     <div className='mx-auto w-11/12 md:w-3/4 lg:w-2/3 break-words border-2 border-gray-300 p-4 m-4'>
-      <div><b>Question</b> {QuestionId} </div>
+      <div>
+        <b>Question</b> {QuestionId}{' '}
+      </div>
       <div>
         <div className='w-full md:w-full lg:w-1/2 mx-auto'>
           {QuestionImgURL && QuestionImgURL != '' ? (
