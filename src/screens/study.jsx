@@ -7,8 +7,31 @@ import { Header } from '../components/Header.js';
 import { TOP } from '../components/TOP.js';
 import { Map } from '@googlemaps/react-wrapper'
 // import boxicons from 'boxicons';
+import { useState, useEffect } from 'react';
+import { db } from '../firebase';
 
 export default function Study() {
+
+  const [info, setInfo] = useState([]);
+
+  useEffect(() => {
+    const subscriber = db
+      .collection("study")
+      .get()
+      .then((querySnapshot) => {
+        const InfoisList = [];
+        querySnapshot.forEach((documentSnapshot) => {
+          InfoisList.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+
+        setInfo(InfoisList);
+        // setLoading(false);
+      });
+  }, []);
+
   return (
     <>
       <style jsx>{`
@@ -29,15 +52,15 @@ export default function Study() {
           <div className='overlay flex items-center justify-center'>
             <div className='grid h-1/3 w-1/4 grid-rows-2 rounded-lg bg-red-500 bg-opacity-60'>
               <div className='text-center text-[2vw] font-extrabold text-white'>
-                Notice
+                Study Material
               </div>
               <div className='font-bolder text-center text-[1.2vw] text-white'>
                 <Link to='/' className='text-white'>
                   Home
                 </Link>{' '}
                 /{' '}
-                <Link to='/notice' className='text-white'>
-                  Notice
+                <Link to='/study' className='text-white'>
+                  Study Material
                 </Link>
               </div>
             </div>
@@ -49,16 +72,12 @@ export default function Study() {
         <Row className='container mx-auto'>
           <Col className='col-lg-4 col-md-6 col-sm-12 center text-center'>
             <h4>Study Material</h4>
-            <p><a href="#">Study Material 1</a></p>
-            {/*Notice 1*/}
-            {/* <div className='flex flex-col justify-center items-center'>
-                <h4>Notice 1</h4>
-                <p>Notice 1 will be published here</p>
-            </div>
-            <div className='flex flex-col justify-center items-center'>
-                <h4>Notice 2</h4>
-                <p>Notice 2 will be published here</p>
-            </div> */}
+            {/* <p><a href="#">Study Material 1</a></p> */}
+            {info.map((item) => (
+              <p><a href={item.upload_documents} target="_blank" rel="noreferrer">{item.title}</a></p>
+            ))}
+                
+            
             
           </Col>
         </Row>

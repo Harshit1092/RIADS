@@ -16,6 +16,9 @@ import Contact from './screens/contact.jsx';
 import Notice from './screens/notice.jsx';
 import Study from './screens/study.jsx';
 import Admin_Attendance from './screens/AdminPanel/scenes/Admin_Attendance.js';
+import Admin_Notice from './screens/AdminPanel/scenes/Admin_Notice.js';
+import Admin_Study from './screens/AdminPanel/scenes/Admin_Study.js';
+import Admin_Questions from './screens/AdminPanel/scenes/Admin_Questions.js';
 import Admin_CandidateProfile from './screens/AdminPanel/scenes/Admin_CandidateProfile.js';
 import Admin_Dashboard from './screens/AdminPanel/scenes/Admin_Dashboard.js';
 import Admin_Result from './screens/AdminPanel/scenes/Admin_Result.js';
@@ -108,6 +111,30 @@ function App() {
             element={
               <PrivateRoute>
                 <Admin_Attendance />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/admin-notice'
+            element={
+              <PrivateRoute>
+                <Admin_Notice />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/admin-study'
+            element={
+              <PrivateRoute>
+                <Admin_Study />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/admin-questions'
+            element={
+              <PrivateRoute>
+                <Admin_Questions />
               </PrivateRoute>
             }
           />
