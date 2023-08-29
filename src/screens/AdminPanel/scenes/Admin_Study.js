@@ -1,12 +1,5 @@
-import { useState, Component, useEffect } from 'react';
-// import React from 'react';
-import { Box, Typography, useTheme } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { Component, useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-// import { useForm } from 'react-hook-form';
-import { Controller, set, useForm } from 'react-hook-form';
-import { v4 as uuidv4 } from 'uuid';
 // import * as firebase from "firebase";
 import {
   Button,
@@ -18,32 +11,41 @@ import {
   Select,
   TextField,
 } from '@material-ui/core';
+import Modal from '@material-ui/core/Modal';
+// import React from 'react';
+import { Box, Typography, useTheme } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+// import { useForm } from 'react-hook-form';
+import { Controller, set, useForm } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
+import * as yup from 'yup';
 
+import { db, storage } from '../../../firebase';
 import { mockDataResult } from '../data/mockData';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
 
-import { collection, addDoc, getDocs, query, where, doc, deleteDoc } from "firebase/firestore";
-import { db } from '../../../firebase';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from '../../../firebase';
-
-import Modal from '@material-ui/core/Modal';
 // import { Controller } from 'react-hook-form';
 
 const schema = yup.object().shape({
-    course: yup.string().required('Course is required'),
+  course: yup.string().required('Course is required'),
   date: yup.string().required('Date is required'),
   title: yup.string().required('Title is required'),
   upload_documents: yup.string().required('Upload Documents is required'),
 });
 
-
-
 const Admin_Result = () => {
-
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
@@ -70,7 +72,7 @@ const Admin_Result = () => {
   };
 
   const onSubmit = async (data, e) => {
-    try{
+    try {
       console.log(data);
       setOpen(false);
 
@@ -81,37 +83,36 @@ const Admin_Result = () => {
 
       const uploadData = async () => {
         try {
-          const docRef = await addDoc(collection(db, "study"), data);
-          console.log("Document written with ID: ", docRef.id);
+          const docRef = await addDoc(collection(db, 'study'), data);
+          console.log('Document written with ID: ', docRef.id);
         } catch (e) {
-          console.error("Error adding document: ", e);
+          console.error('Error adding document: ', e);
         }
       };
 
       try {
-        
+        console.log('heyy');
 
-        console.log("heyy");
-
-        const studyData = ref(storage, `admin-images/study/${data.id}`)
-        await uploadBytes(studyData, e.target.upload_documents.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (doc_URL) => {
-            console.log(doc_URL)
-            data.upload_documents = doc_URL;
-            await uploadData();
+        const studyData = ref(storage, `admin-images/study/${data.id}`);
+        await uploadBytes(studyData, e.target.upload_documents.files[0])
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (doc_URL) => {
+              console.log(doc_URL);
+              data.upload_documents = doc_URL;
+              await uploadData();
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload study material")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert("Couldn't upload study material");
+            console.log(er);
+          });
 
-        console.log("uploading study material");
+        console.log('uploading study material');
       } catch (e) {
-        console.error("Error uploading study material: ", e);
+        console.error('Error uploading study material: ', e);
         setError('Failed to upload study material');
       }
-
 
       setLoading(false);
     } catch (e) {
@@ -119,13 +120,11 @@ const Admin_Result = () => {
     }
   };
 
-
   const [info, setInfo] = useState([]);
-
 
   useEffect(() => {
     const subscriber = db
-      .collection("study")
+      .collection('study')
       .get()
       .then((querySnapshot) => {
         const InfoisList = [];
@@ -139,8 +138,6 @@ const Admin_Result = () => {
         setInfo(InfoisList);
       });
   }, []);
-
-
 
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
@@ -159,31 +156,32 @@ const Admin_Result = () => {
           </div>
           <hr class='h-px my-8 bg-gray-200 border-2 dark:bg-gray-700'></hr>
           <div className='flex flex-row justify-between'>
-            <button className='bg-[#c54545] px-3 py-2 text-white mx-20' onClick={handleOpen}>Add Study Material</button>
+            <button
+              className='bg-[#c54545] px-3 py-2 text-white mx-20'
+              onClick={handleOpen}
+            >
+              Add Study Material
+            </button>
           </div>
 
-          <Modal
-            onClose={handleClose}
-            open={open}
-
-          >
-            <Box sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 900,
-              bgcolor: "background.paper",
-              border: "2px solid #000",
-              boxShadow: 24,
-              p: 4,
-            }}>
-              <Typography id="modal-modal-title"
-                variant="h6" component="h2">
+          <Modal onClose={handleClose} open={open}>
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 900,
+                bgcolor: 'background.paper',
+                border: '2px solid #000',
+                boxShadow: 24,
+                p: 4,
+              }}
+            >
+              <Typography id='modal-modal-title' variant='h6' component='h2'>
                 Add Study Material
               </Typography>
-              <Typography id="modal-modal-description"
-                sx={{ mt: 2 }}>
+              <Typography id='modal-modal-description' sx={{ mt: 2 }}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <Grid container spacing={6}>
                     <Grid item xs={12} sm={4}>
@@ -191,8 +189,9 @@ const Admin_Result = () => {
                         name='course'
                         control={control}
                         defaultValue=''
-                        render={({ field }) =>
-                          <TextField {...field}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
                             label='Course'
                             error={!!errors.course}
                             helperText={errors?.course?.message}
@@ -200,7 +199,8 @@ const Admin_Result = () => {
                             InputLabelProps={{
                               shrink: true,
                             }}
-                          />}
+                          />
+                        )}
                       />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -208,8 +208,9 @@ const Admin_Result = () => {
                         name='date'
                         control={control}
                         defaultValue=''
-                        render={({ field }) =>
-                          <TextField {...field}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
                             label='Date'
                             type='date'
                             error={!!errors.date}
@@ -218,19 +219,20 @@ const Admin_Result = () => {
                             InputLabelProps={{
                               shrink: true,
                             }}
-                          />}
+                          />
+                        )}
                       />
                     </Grid>
                   </Grid>
                   <Grid container spacing={6}>
                     <Grid item xs={12} sm={4}>
-
                       <Controller
                         name='title'
                         control={control}
                         defaultValue=''
-                        render={({ field }) =>
-                          <TextField {...field}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
                             label='Title'
                             error={!!errors.title}
                             helperText={errors?.title?.message}
@@ -238,17 +240,18 @@ const Admin_Result = () => {
                             InputLabelProps={{
                               shrink: true,
                             }}
-                          />}
+                          />
+                        )}
                       />
                     </Grid>
                     <Grid item xs={12} sm={4}>
-
                       <Controller
                         name='upload_documents'
                         control={control}
                         defaultValue=''
-                        render={({ field }) =>
-                          <TextField {...field}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
                             label='Upload Documents'
                             error={!!errors.upload_documents}
                             helperText={errors?.upload_documents?.message}
@@ -257,16 +260,18 @@ const Admin_Result = () => {
                               shrink: true,
                             }}
                             type='file'
-                          />}
+                          />
+                        )}
                       />
                     </Grid>
                   </Grid>
                   <div className='flex flex-row justify-between my-4'>
-                    <Button variant='contained' color='primary' type='submit'>Submit</Button>
+                    <Button variant='contained' color='primary' type='submit'>
+                      Submit
+                    </Button>
                   </div>
                 </form>
               </Typography>
-
             </Box>
           </Modal>
 
@@ -317,7 +322,7 @@ const Admin_Result = () => {
                         </th>
                       </tr>
                     </thead>
-                    { }
+                    {}
                     {info.map((info) => (
                       <tbody className='bg-white divide-y divide-gray-200'>
                         <tr key={info.id}>
@@ -366,27 +371,37 @@ const Admin_Result = () => {
                             </a>
                           </td>
                           <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
-                            <Button variant='contained' color='secondary' type='submit'
+                            <Button
+                              variant='contained'
+                              color='secondary'
+                              type='submit'
                               onClick={async () => {
-
                                 console.log(info.id);
                                 // get the document id and delete it
-                                const q = query(collection(db, "study"), where("id", "==", info.id));
-                                await getDocs(q).then( async (response) => {
-                                  let data = response.docs.map((ele) => ({ ...ele.data() }));
-                                  const ref = doc(db, 'study', response.docs[0].id);
+                                const q = query(
+                                  collection(db, 'study'),
+                                  where('id', '==', info.id)
+                                );
+                                await getDocs(q).then(async (response) => {
+                                  let data = response.docs.map((ele) => ({
+                                    ...ele.data(),
+                                  }));
+                                  const ref = doc(
+                                    db,
+                                    'study',
+                                    response.docs[0].id
+                                  );
                                   await deleteDoc(ref);
                                   // Refresh the page
                                   window.location.reload();
                                 });
-                              }
-                              }>
+                              }}
+                            >
                               Delete
                             </Button>
                           </td>
                         </tr>
                       </tbody>
-
                     ))}
                   </table>
                 </div>

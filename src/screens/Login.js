@@ -3,11 +3,13 @@ import { Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
 import '../styles/Login.css';
-import { db } from '../firebase';
+
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+
 // import { useEffect, useState } from 'react';
 
 import { useAuth } from '../contexts/AuthContext';
+import { db } from '../firebase';
 
 export default function Login() {
   const emailRef = useRef();
@@ -18,15 +20,12 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-
   // admin email data list
   const [adminEmail, setAdminEmail] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
-      const q = query(
-        collection(db, 'admin'),
-      );
+      const q = query(collection(db, 'admin'));
       await getDocs(q).then((response) => {
         let data = response.docs.map((ele) => ({ ...ele.data() }));
         setAdminEmail(data);
@@ -34,7 +33,7 @@ export default function Login() {
       });
     };
     getData();
-  }, );
+  });
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -45,10 +44,12 @@ export default function Login() {
 
       await login(emailRef.current.value, passwordRef.current.value);
 
-      console.log(emailRef.current.value);  // email
+      console.log(emailRef.current.value); // email
 
       // check if the user is in the admin list
-      const admin = adminEmail.find((ele) => ele.email === emailRef.current.value);
+      const admin = adminEmail.find(
+        (ele) => ele.email === emailRef.current.value
+      );
       if (admin) {
         navigate('/admin-dashboard');
       } else {
@@ -62,9 +63,8 @@ export default function Login() {
       // We have to get the user type from the database
       // const userType = 'admin';
 
-
       // navigate(`/${userType}-dashboard`);
-    } catch (e){
+    } catch (e) {
       console.log(e);
       setError('Wrong email or password');
     }

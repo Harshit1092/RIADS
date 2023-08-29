@@ -1,3 +1,6 @@
+// import boxicons from 'boxicons';
+import { useEffect, useState } from 'react';
+import { Map } from '@googlemaps/react-wrapper';
 import { Carousel, Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -5,18 +8,14 @@ import { Choose } from '../components/Choose.js';
 import { Footer } from '../components/Footer.js';
 import { Header } from '../components/Header.js';
 import { TOP } from '../components/TOP.js';
-import { Map } from '@googlemaps/react-wrapper'
-// import boxicons from 'boxicons';
-import { useState, useEffect } from 'react';
 import { db } from '../firebase';
 
 export default function Study() {
-
   const [info, setInfo] = useState([]);
 
   useEffect(() => {
     const subscriber = db
-      .collection("study")
+      .collection('study')
       .get()
       .then((querySnapshot) => {
         const InfoisList = [];
@@ -74,11 +73,16 @@ export default function Study() {
             <h4>Study Material</h4>
             {/* <p><a href="#">Study Material 1</a></p> */}
             {info.map((item) => (
-              <p><a href={item.upload_documents} target="_blank" rel="noreferrer">{item.title}</a></p>
+              <p>
+                <a
+                  href={item.upload_documents}
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  {item.title}
+                </a>
+              </p>
             ))}
-                
-            
-            
           </Col>
         </Row>
       </Container>
