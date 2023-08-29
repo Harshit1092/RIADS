@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Style } from '@mui/icons-material';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { db } from '../../../firebase';
@@ -45,58 +46,43 @@ const TableRow = ({ data }) => {
   };
 
   return (
-
     <tr>
       <td className='px-6 py-4 whitespace-nowrap'>
         <div className='flex items-center'>
           <div className='ml-4'>
-            <div className='text-sm font-medium text-gray-900'>
-              {data.id}
-            </div>
+            <div className='text-sm font-medium text-gray-900'>{data.id}</div>
           </div>
         </div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.name}
-        </div>
+        <div className='text-sm text-gray-900'>{data.name}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.fathersName}
-        </div>
+        <div className='text-sm text-gray-900'>{data.fathersName}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.email}
-        </div>
+        <div className='text-sm text-gray-900'>{data.email}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.state}
-        </div>
+        <div className='text-sm text-gray-900'>{data.state}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.age}
-        </div>
+        <div className='text-sm text-gray-900'>{data.age}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.gender}
-        </div>
+        <div className='text-sm text-gray-900'>{data.gender}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
-        <div className='text-sm text-gray-900'>
-          {data.phoneNumber}
-        </div>
+        <div className='text-sm text-gray-900'>{data.phoneNumber}</div>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
         <div className='text-sm text-gray-900'>
           <button
             type='button'
             className='px-3 py-2 text-white'
-            style={{ backgroundColor: data.status === 'Pending' ? 'red' : 'green' }}
+            style={{
+              backgroundColor: data.status === 'Pending' ? 'red' : 'green',
+            }}
             onClick={() => {
               console.log('clicked');
 
@@ -124,7 +110,6 @@ const TableRow = ({ data }) => {
 
 
             }}
-
           >
             {data.status}
           </button>
@@ -194,7 +179,7 @@ const Admin_CandidateProfile = () => {
 
   const { currentUser } = useAuth();
   // console.log(currentUser.multiFactor.user.email);
-  const emailRef = currentUser.multiFactor.user.email
+  const emailRef = currentUser.multiFactor.user.email;
 
   // console.log(currentUser.multiFactor.user.uid);
 
@@ -205,9 +190,7 @@ const Admin_CandidateProfile = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const q = query(
-        collection(db, 'users'),
-      );
+      const q = query(collection(db, 'users'));
       await getDocs(q).then((response) => {
         let data = response.docs.map((ele) => ({ ...ele.data() }));
         setData(data);
@@ -215,12 +198,9 @@ const Admin_CandidateProfile = () => {
       });
     };
     getData();
-  },);
+  });
 
   // console.log(data);
-
-
-
 
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
@@ -327,8 +307,6 @@ const Admin_CandidateProfile = () => {
               </div>
             </div>
           </div>
-
-
         </div>
       </div>
     </div>

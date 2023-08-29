@@ -1,51 +1,67 @@
-import { useState, Component, useEffect } from 'react';
+import { Component, useEffect, useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+// import * as firebase from "firebase";
+import {
+  Button,
+  Container,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@material-ui/core';
+import Modal from '@material-ui/core/Modal';
 // import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 // import { useForm } from 'react-hook-form';
 import { Controller, set, useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
-// import * as firebase from "firebase";
-import {
-    Button,
-    Container,
-    FormControl,
-    Grid,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
-} from '@material-ui/core';
+import * as yup from 'yup';
 
+import { db, storage } from '../../../firebase';
 import { mockDataResult } from '../data/mockData';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
 
-import { collection, addDoc, getDocs, query, where, doc, deleteDoc } from "firebase/firestore";
-import { db } from '../../../firebase';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { storage } from '../../../firebase';
-
-import Modal from '@material-ui/core/Modal';
 // import { Controller } from 'react-hook-form';
 
 const schema = yup.object().shape({
     content_eng: yup.string().required('content_eng is required'),
     content_punj: yup.string().required('content_punj is required'),
-    date: yup.string().required('Date is required'),
-    correct_option: yup.string().required('correct_option is required'),
-    img: yup.string().required('Upload Documents is required'),
+    option1_eng: yup.string().required('option1_eng is required'),
+    option2_eng: yup.string().required('option2_eng is required'),
+    option3_eng: yup.string().required('option3_eng is required'),
+    option4_eng: yup.string().required('option4_eng is required'),
+    option1_punj: yup.string().required('option1_punj is required'),
+    option2_punj: yup.string().required('option2_punj is required'),
+    option3_punj: yup.string().required('option3_punj is required'),
+    option4_punj: yup.string().required('option4_punj is required'),
+    correct_option: yup.number().required('correct_option is required'),
+    img: yup.string().required('img is required'),
 });
 
-
-
 const Admin_Result = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const [isSidebar, setIsSidebar] = useState(true);
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-    const theme = useTheme();
+  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [isSidebar, setIsSidebar] = useState(true);
 
@@ -53,6 +69,26 @@ const Admin_Result = () => {
     const [error, setError] = useState('');
 
     const [open, setOpen] = useState(false);
+
+    const [open_eng, setOpenEng] = useState(false);
+
+    const handleCloseEng = () => {
+        setOpenEng(false);
+    };
+
+    const handleOpenEng = () => {
+        setOpenEng(true);
+    };
+
+    const [open_punj, setOpenPunj] = useState(false);
+
+    const handleClosePunj = () => {
+        setOpenPunj(false);
+    };
+
+    const handleOpenPunj = () => {
+        setOpenPunj(true);
+    };
 
     const {
         handleSubmit,
@@ -80,43 +116,80 @@ const Admin_Result = () => {
 
             data.id = uuidv4();
 
-            const uploadData = async () => {
+
+            // tkae data from form and upload it to firebase
+            const uploadData = async (data) => {
                 try {
-                    const docRef = await addDoc(collection(db, "study"), data);
-                    console.log("Document written with ID: ", docRef.id);
+
+                    const engData = {
+                        QuestionId: data.id,
+                        Content: data.content_eng,
+                        Options: [data.option1_eng, data.option2_eng, data.option3_eng, data.option4_eng],
+                        Correct_option: data.correct_option,
+                        Image: data.img,
+                        Language: 'English'
+                    }
+
+                    const punjData = {
+                        QuestionId: data.id,
+                        Content: data.content_punj,
+                        Options: [data.option1_punj, data.option2_punj, data.option3_punj, data.option4_punj],
+                        Correct_option: data.correct_option,
+                        Image: data.img,
+                        Language: 'Punjabi'
+                    }
+
+
+                    const docRefEng = await addDoc(collection(db, "test-questions"), engData);
+                    console.log("Document Eng written with ID: ", docRefEng.id);
+
+                    const docRefPunj = await addDoc(collection(db, "test-questions"), punjData);
+                    console.log("Document Punj written with ID: ", docRefPunj.id);
+
                 } catch (e) {
                     console.error("Error adding document: ", e);
                 }
             };
 
-            try {
 
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
                 console.log("heyy");
 
-                const studyData = ref(storage, `admin-images/study/${data.id}`)
-                await uploadBytes(studyData, e.target.img.files[0]).then((snapshot) => {
+                const testImageData = ref(storage, `test-images/${data.id}`)
+                await uploadBytes(testImageData, e.target.img.files[0]).then((snapshot) => {
                     console.log(snapshot)
                     getDownloadURL(snapshot.ref).then(async (doc_URL) => {
                         console.log(doc_URL)
                         data.img = doc_URL;
-                        await uploadData();
+                        await uploadData(data);
                     })
                 }).catch((er) => {
-                    window.alert("Couldn't upload study material")
+                    window.alert("Couldn't upload Image")
                     console.log(er);
                 })
 
-                console.log("uploading study material");
+                console.log("uploading Image");
             } catch (e) {
-                console.error("Error uploading study material: ", e);
-                setError('Failed to upload study material');
+                console.error("Error uploading Image: ", e);
+                setError('Failed to upload Image');
             }
 
 
-            setLoading(false);
+      data.id = uuidv4();
+
+      const uploadData = async () => {
+        try {
+          const docRef = await addDoc(collection(db, 'study'), data);
+          console.log('Document written with ID: ', docRef.id);
         } catch (e) {
-            console.log(e);
+          console.error('Error adding document: ', e);
         }
     };
 
@@ -124,22 +197,36 @@ const Admin_Result = () => {
     const [info, setInfo] = useState([]);
 
 
-    // useEffect(() => {
-    //     const subscriber = db
-    //         .collection("study")
-    //         .get()
-    //         .then((querySnapshot) => {
-    //             const InfoisList = [];
-    //             querySnapshot.forEach((documentSnapshot) => {
-    //                 InfoisList.push({
-    //                     ...documentSnapshot.data(),
-    //                     key: documentSnapshot.id,
-    //                 });
-    //             });
+    useEffect(() => {
+        const subscriber = db
+            .collection("test-questions")
+            .get()
+            .then((querySnapshot) => {
+                const InfoisList = [];
+                querySnapshot.forEach((documentSnapshot) => {
+                    InfoisList.push({
+                        ...documentSnapshot.data(),
+                        key: documentSnapshot.id,
+                    });
+                });
 
-    //             setInfo(InfoisList);
-    //         });
-    // }, []);
+                // setInfo(InfoisList);
+                console.log(InfoisList);
+                // Club the data with the same id
+                const unique = [...new Set(InfoisList.map((item) => item.id))];
+                const uniqueData = [];
+                unique.forEach((id) => {
+                    const data = InfoisList.filter((item) => item.id === id);
+                    uniqueData.push(data);
+                }
+                );
+                console.log(uniqueData);
+                setInfo(uniqueData);
+
+                // console.log(uniqueData[0][0].QuestionId);
+
+            });
+    }, []);
 
 
 
@@ -259,10 +346,10 @@ const Admin_Result = () => {
                                                     />}
                                             />
                                         </Grid>
-                                        
+
                                     </Grid>
                                     <Grid container spacing={6}>
-                                    <Grid item xs={12} sm={4}>
+                                        <Grid item xs={12} sm={4}>
                                             <Controller
                                                 name='option2_eng'
                                                 control={control}
@@ -296,12 +383,12 @@ const Admin_Result = () => {
                                                     />}
                                             />
                                         </Grid>
-                                        
-                                        
-                                        
+
+
+
                                     </Grid>
                                     <Grid container spacing={6}>
-                                    <Grid item xs={12} sm={4}>
+                                        <Grid item xs={12} sm={4}>
                                             <Controller
                                                 name='option3_eng'
                                                 control={control}
@@ -335,10 +422,10 @@ const Admin_Result = () => {
                                                     />}
                                             />
                                         </Grid>
-                                        
+
                                     </Grid>
                                     <Grid container spacing={6}>
-                                    <Grid item xs={12} sm={4}>
+                                        <Grid item xs={12} sm={4}>
                                             <Controller
                                                 name='option4_eng'
                                                 control={control}
@@ -355,7 +442,7 @@ const Admin_Result = () => {
                                                     />}
                                             />
                                         </Grid>
-                                        
+
                                         <Grid item xs={12} sm={4}>
                                             <Controller
                                                 name='option4_punj'
@@ -443,13 +530,13 @@ const Admin_Result = () => {
                                                     scope='col'
                                                     className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
                                                 >
-                                                    content_eng
+                                                    View Eng
                                                 </th>
                                                 <th
                                                     scope='col'
                                                     className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
                                                 >
-                                                    Date
+                                                    View Punj
                                                 </th>
                                                 <th
                                                     scope='col'
@@ -461,7 +548,7 @@ const Admin_Result = () => {
                                                     scope='col'
                                                     className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
                                                 >
-                                                    Upload Documents
+                                                    Image
                                                 </th>
                                                 <th
                                                     scope='col'
@@ -474,12 +561,12 @@ const Admin_Result = () => {
                                         { }
                                         {info.map((info) => (
                                             <tbody className='bg-white divide-y divide-gray-200'>
-                                                <tr key={info.id}>
+                                                <tr key={info}>
                                                     <td className='px-6 py-4 whitespace-nowrap'>
                                                         <div className='flex items-center'>
                                                             <div className='ml-4'>
                                                                 <div className='text-sm font-medium text-gray-900'>
-                                                                    {info.id}
+                                                                    {info[0].QuestionId}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -488,7 +575,163 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                             <div className='ml-4'>
                                                                 <div className='text-sm font-medium text-gray-900'>
-                                                                    {info.content_eng}
+                                                                    <Button variant='contained' color='secondary'
+                                                                        onClick={() => {
+                                                                            // create Modal and show the data
+                                                                            // console.log(info);
+                                                                            // setModalData(info);
+
+                                                                            //open the modal
+                                                                            handleOpenEng();
+
+                                                                        }}
+                                                                    >
+                                                                        View
+                                                                    </Button>
+
+                                                                    <Modal
+                                                                        onClose={handleCloseEng}
+                                                                        open={open_eng}
+
+                                                                    >
+                                                                        <Box sx={{
+                                                                            position: "absolute",
+                                                                            top: "50%",
+                                                                            left: "50%",
+                                                                            transform: "translate(-50%, -50%)",
+                                                                            width: 900,
+                                                                            bgcolor: "background.paper",
+                                                                            border: "2px solid #000",
+                                                                            boxShadow: 24,
+                                                                            p: 4,
+                                                                        }}>
+                                                                            <Typography id="modal-modal-correct_option"
+                                                                                variant="h6" component="h2">
+                                                                                {
+                                                                                    // check if the language is english
+                                                                                    info[0].Language === 'English' ?
+                                                                                        info[0].Content
+                                                                                        :
+                                                                                        info[1].Content
+                                                                                }
+
+                                                                            </Typography>
+                                                                            {/*Display options */}
+                                                                            <Typography id="modal-modal-description"
+                                                                                sx={{ mt: 2 }}>
+                                                                                <div className='flex flex-col'>
+                                                                                    <div className='-my-4 overflow-x-auto'>
+                                                                                        <div className='py-6 align-middle inline-block min-w-full pl-4 pr-4'>
+                                                                                            <div className='shadow overflow-hidden border-b border-gray-200 sm:rounded-lg'>
+                                                                                                <table className='min-w-full divide-y divide-gray-200'>
+                                                                                                    <thead className='bg-gray-50'>
+                                                                                                        <tr>
+                                                                                                            <th
+                                                                                                                scope='col'
+                                                                                                                className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
+                                                                                                            >
+                                                                                                                Option 1
+                                                                                                            </th>
+                                                                                                            <th
+                                                                                                                scope='col'
+                                                                                                                className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
+                                                                                                            >
+                                                                                                                Option 2
+
+
+                                                                                                            </th>
+                                                                                                            <th
+                                                                                                                scope='col'
+                                                                                                                className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
+                                                                                                            >
+                                                                                                                Option 3
+                                                                                                            </th>
+                                                                                                            <th
+                                                                                                                scope='col'
+                                                                                                                className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
+                                                                                                            >
+                                                                                                                Option 4
+                                                                                                            </th>
+                                                                                                        </tr>
+                                                                                                    </thead>
+                                                                                                    <tbody className='bg-white divide-y divide-gray-200'>
+                                                                                                        <tr key={info}>
+                                                                                                            <td className='px-6 py-4 whitespace-nowrap'>
+                                                                                                                <div className='flex items-center'>
+                                                                                                                    <div className='ml-4'>
+                                                                                                                        <div className='text-sm font-medium text-gray-900'>
+                                                                                                                            {
+                                                                                                                                info[0].Language === 'English' ?
+                                                                                                                                    info[0].Options[0]
+                                                                                                                                    :
+                                                                                                                                    info[1].Options[0]
+                                                                                                                            }
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </td>
+                                                                                                            <td className='px-6 py-4 whitespace-nowrap'>
+                                                                                                                <div className='flex items-center'>
+                                                                                                                    <div className='ml-4'>
+                                                                                                                        <div className='text-sm font-medium text-gray-900'>
+                                                                                                                            {
+                                                                                                                                info[0].Language === 'English' ?
+                                                                                                                                    info[0].Options[1]
+                                                                                                                                    :
+                                                                                                                                    info[1].Options[1]
+                                                                                                                            }
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </td>
+                                                                                                            <td className='px-6 py-4 whitespace-nowrap'>
+                                                                                                                <div className='flex items-center'>
+                                                                                                                    <div className='ml-4'>
+                                                                                                                        <div className='text-sm font-medium text-gray-900'>
+                                                                                                                            {
+                                                                                                                                info[0].Language === 'English' ?
+                                                                                                                                    info[0].Options[2]
+                                                                                                                                    :
+                                                                                                                                    info[1].Options[2]
+                                                                                                                            }
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </td>
+                                                                                                            <td className='px-6 py-4 whitespace-nowrap'>
+                                                                                                                <div className='flex items-center'>
+                                                                                                                    <div className='ml-4'>
+                                                                                                                        <div className='text-sm font-medium text-gray-900'>
+                                                                                                                            {
+                                                                                                                                info[0].Language === 'English' ?
+                                                                                                                                    info[0].Options[3]
+                                                                                                                                    :
+                                                                                                                                    info[1].Options[3]
+                                                                                                                            }
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </td>
+                                                                                                        </tr>
+                                                                                                    </tbody>
+
+                                                                                                </table>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </Typography>
+
+
+
+
+
+
+                                                                        </Box>
+
+                                                                    </Modal>
+
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -497,7 +740,161 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                             <div className='ml-4'>
                                                                 <div className='text-sm font-medium text-gray-900'>
-                                                                    {info.date}
+                                                                    <Button variant='contained' color='secondary'
+                                                                        onClick={() => {
+                                                                            // create Modal and show the data
+                                                                            // console.log(info);
+                                                                            // setModalData(info);
+                                                                            handleOpenPunj();
+                                                                        }}
+                                                                    >
+                                                                        View
+                                                                    </Button>
+
+
+                                                                    <Modal
+                                                                        onClose={handleClosePunj}
+                                                                        open={open_punj}
+
+                                                                    >
+                                                                        <Box sx={{
+                                                                            position: "absolute",
+                                                                            top: "50%",
+                                                                            left: "50%",
+                                                                            transform: "translate(-50%, -50%)",
+                                                                            width: 900,
+                                                                            bgcolor: "background.paper",
+                                                                            border: "2px solid #000",
+                                                                            boxShadow: 24,
+                                                                            p: 4,
+                                                                        }}>
+                                                                            <Typography id="modal-modal-correct_option"
+                                                                                variant="h6" component="h2">
+                                                                                {
+                                                                                    // check if the language is english
+                                                                                    info[0].Language === 'Punjabi' ?
+                                                                                        info[0].Content
+                                                                                        :
+                                                                                        info[1].Content
+                                                                                }
+
+                                                                            </Typography>
+                                                                            {/*Display options */}
+                                                                            <Typography id="modal-modal-description"
+                                                                                sx={{ mt: 2 }}>
+                                                                                <div className='flex flex-col'>
+                                                                                    <div className='-my-4 overflow-x-auto'>
+                                                                                        <div className='py-6 align-middle inline-block min-w-full pl-4 pr-4'>
+                                                                                            <div className='shadow overflow-hidden border-b border-gray-200 sm:rounded-lg'>
+                                                                                                <table className='min-w-full divide-y divide-gray-200'>
+                                                                                                    <thead className='bg-gray-50'>
+                                                                                                        <tr>
+                                                                                                            <th
+                                                                                                                scope='col'
+                                                                                                                className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
+                                                                                                            >
+                                                                                                                Option 1
+                                                                                                            </th>
+                                                                                                            <th
+                                                                                                                scope='col'
+                                                                                                                className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
+                                                                                                            >
+                                                                                                                Option 2
+
+
+                                                                                                            </th>
+                                                                                                            <th
+                                                                                                                scope='col'
+                                                                                                                className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
+                                                                                                            >
+                                                                                                                Option 3
+                                                                                                            </th>
+                                                                                                            <th
+                                                                                                                scope='col'
+                                                                                                                className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
+                                                                                                            >
+                                                                                                                Option 4
+                                                                                                            </th>
+                                                                                                        </tr>
+                                                                                                    </thead>
+                                                                                                    <tbody className='bg-white divide-y divide-gray-200'>
+                                                                                                        <tr key={info}>
+                                                                                                            <td className='px-6 py-4 whitespace-nowrap'>
+                                                                                                                <div className='flex items-center'>
+                                                                                                                    <div className='ml-4'>
+                                                                                                                        <div className='text-sm font-medium text-gray-900'>
+                                                                                                                            {
+                                                                                                                                info[0].Language === 'Punjabi' ?
+                                                                                                                                    info[0].Options[0]
+                                                                                                                                    :
+                                                                                                                                    info[1].Options[0]
+                                                                                                                            }
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </td>
+                                                                                                            <td className='px-6 py-4 whitespace-nowrap'>
+                                                                                                                <div className='flex items-center'>
+                                                                                                                    <div className='ml-4'>
+                                                                                                                        <div className='text-sm font-medium text-gray-900'>
+                                                                                                                            {
+                                                                                                                                info[0].Language === 'Punjabi' ?
+                                                                                                                                    info[0].Options[1]
+                                                                                                                                    :
+                                                                                                                                    info[1].Options[1]
+                                                                                                                            }
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </td>
+                                                                                                            <td className='px-6 py-4 whitespace-nowrap'>
+                                                                                                                <div className='flex items-center'>
+                                                                                                                    <div className='ml-4'>
+                                                                                                                        <div className='text-sm font-medium text-gray-900'>
+                                                                                                                            {
+                                                                                                                                info[0].Language === 'Punjabi' ?
+                                                                                                                                    info[0].Options[2]
+                                                                                                                                    :
+                                                                                                                                    info[1].Options[2]
+                                                                                                                            }
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </td>
+                                                                                                            <td className='px-6 py-4 whitespace-nowrap'>
+                                                                                                                <div className='flex items-center'>
+                                                                                                                    <div className='ml-4'>
+                                                                                                                        <div className='text-sm font-medium text-gray-900'>
+                                                                                                                            {
+                                                                                                                                info[0].Language === 'Punjabi' ?
+                                                                                                                                    info[0].Options[3]
+                                                                                                                                    :
+                                                                                                                                    info[1].Options[3]
+                                                                                                                            }
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </td>
+                                                                                                        </tr>
+                                                                                                    </tbody>
+
+                                                                                                </table>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </Typography>
+
+
+
+
+
+
+                                                                        </Box>
+
+                                                                    </Modal>
+
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -506,14 +903,14 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                             <div className='ml-4'>
                                                                 <div className='text-sm font-medium text-gray-900'>
-                                                                    {info.correct_option}
+                                                                    {info[0].Correct_option}
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
                                                         <a
-                                                            href={info.img}
+                                                            href={info[0].Image}
                                                             className='text-indigo-600 hover:text-indigo-900'
                                                         >
                                                             Download
@@ -523,16 +920,34 @@ const Admin_Result = () => {
                                                         <Button variant='contained' color='secondary' type='submit'
                                                             onClick={async () => {
 
-                                                                console.log(info.id);
-                                                                // get the document id and delete it
-                                                                const q = query(collection(db, "study"), where("id", "==", info.id));
+                                                                // Delete both the documents
+                                                                const q = query(collection(db, "test-questions"), where("QuestionId", "==", info[0].QuestionId));
                                                                 await getDocs(q).then(async (response) => {
                                                                     let data = response.docs.map((ele) => ({ ...ele.data() }));
-                                                                    const ref = doc(db, 'study', response.docs[0].id);
+                                                                    const ref = doc(db, 'test-questions', response.docs[0].id);
                                                                     await deleteDoc(ref);
-                                                                    // Refresh the page
-                                                                    window.location.reload();
                                                                 });
+
+                                                                const q1 = query(collection(db, "test-questions"), where("QuestionId", "==", info[1].QuestionId));
+                                                                await getDocs(q1).then(async (response) => {
+                                                                    let data = response.docs.map((ele) => ({ ...ele.data() }));
+                                                                    const ref = doc(db, 'test-questions', response.docs[0].id);
+                                                                    await deleteDoc(ref);
+                                                                });
+
+                                                                
+                                                                    
+
+                                                                // console.log(info.id);
+                                                                // // get the document id and delete it
+                                                                // const q = query(collection(db, "study"), where("id", "==", info.id));
+                                                                // await getDocs(q).then(async (response) => {
+                                                                //     let data = response.docs.map((ele) => ({ ...ele.data() }));
+                                                                //     const ref = doc(db, 'study', response.docs[0].id);
+                                                                //     await deleteDoc(ref);
+                                                                //     // Refresh the page
+                                                                //     window.location.reload();
+                                                                // });
                                                             }
                                                             }>
                                                             Delete
@@ -543,14 +958,61 @@ const Admin_Result = () => {
 
                                         ))}
                                     </table>
+
                                 </div>
+                              </div>
                             </div>
-                        </div>
-                    </div>
+                          </td>
+                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                            <a
+                              href={info.img}
+                              className='text-indigo-600 hover:text-indigo-900'
+                            >
+                              Download
+                            </a>
+                          </td>
+                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                            <Button
+                              variant='contained'
+                              color='secondary'
+                              type='submit'
+                              onClick={async () => {
+                                console.log(info.id);
+                                // get the document id and delete it
+                                const q = query(
+                                  collection(db, 'study'),
+                                  where('id', '==', info.id)
+                                );
+                                await getDocs(q).then(async (response) => {
+                                  let data = response.docs.map((ele) => ({
+                                    ...ele.data(),
+                                  }));
+                                  const ref = doc(
+                                    db,
+                                    'study',
+                                    response.docs[0].id
+                                  );
+                                  await deleteDoc(ref);
+                                  // Refresh the page
+                                  window.location.reload();
+                                });
+                              }}
+                            >
+                              Delete
+                            </Button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    ))}
+                  </table>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Admin_Result;

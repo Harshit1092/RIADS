@@ -66,10 +66,12 @@ const CandidateTest = () => {
 
   return (
     <div className='min-h-screen h-full'>
-      {/* <div>
+      {
+        /* <div>
         <Topbar />
       </div> */
-      <div className='m-20'></div>}
+        <div className='m-20'></div>
+      }
 
       <form
         onSubmit={handleSubmit}

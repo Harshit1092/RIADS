@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { usePromiseTracker } from "react-promise-tracker";
 import {
   Box,
   Button,
@@ -23,7 +22,6 @@ import { db } from '../../firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../../firebase';
 import { v4 as uuidv4 } from 'uuid';
-
 
 
 const schema = yup.object().shape({
@@ -92,9 +90,7 @@ const schema = yup.object().shape({
     .required('Age is required')
     .min(18, 'Age should be at least 18 years')
     .max(60, 'Age should not exceed 60 years'),
-  gender: yup
-    .string()
-    .required("Gender is required")
+  gender: yup.string().required('Gender is required'),
 });
 
 const qualificationOptions = [
@@ -190,9 +186,9 @@ export default function Form({ uid , update}) {
   // const LoadingIndicator = props => {
   //   const { promiseInProgress } = usePromiseTracker();
   //   return (
-  //     promiseInProgress && 
+  //     promiseInProgress &&
   //     <h1>Submitting!</h1>
-  //   );  
+  //   );
   // }
 
 
@@ -202,7 +198,7 @@ export default function Form({ uid , update}) {
       setError('');
       setLoading(true);
 
-      console.log("heyy");
+      console.log('heyy');
 
       console.log(data.passportSizePhoto);
       console.log(e.target.passportSizePhoto.files[0]);
@@ -210,14 +206,14 @@ export default function Form({ uid , update}) {
       console.log(e.target.backAdhaarCard.files[0]);
       console.log(e.target.frontDrivingLicense.files[0]);
       console.log(e.target.backDrivingLicense.files[0]);
-
+      data.attendance = [];
       const uploadData = async () => {
         // Upload data to firestore
         try {
-          const docRef = await addDoc(collection(db, "users"), data);
-          console.log("Document written with ID: ", docRef.id);
+          const docRef = await addDoc(collection(db, 'users'), data);
+          console.log('Document written with ID: ', docRef.id);
         } catch (e) {
-          console.error("Error adding document: ", e);
+          console.error('Error adding document: ', e);
         }
       };
 
@@ -226,115 +222,145 @@ export default function Form({ uid , update}) {
 
       // Upload passport size photo
       try {
-        const profilePicRef = ref(storage, `user-images/passport_size_photo/${data.id}`)
-        await uploadBytes(profilePicRef, e.target.passportSizePhoto.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (passport_URL) => {
-            console.log(passport_URL)
-            data.passportSizePhoto = passport_URL;
+        const profilePicRef = ref(
+          storage,
+          `user-images/passport_size_photo/${data.id}`
+        );
+        await uploadBytes(profilePicRef, e.target.passportSizePhoto.files[0])
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (passport_URL) => {
+              console.log(passport_URL);
+              data.passportSizePhoto = passport_URL;
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload your passport size photo")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert("Couldn't upload your passport size photo");
+            console.log(er);
+          });
 
-        console.log("uploading passport size photo");
+        console.log('uploading passport size photo');
       } catch (e) {
-        console.error("Error uploading passport size photo: ", e);
+        console.error('Error uploading passport size photo: ', e);
       }
 
       // Upload front picture of aadhaar card
       try {
-        const frontAdhaarCardRef = ref(storage, `user-images/front_adhaar_card/${data.id}`)
-        await uploadBytes(frontAdhaarCardRef, e.target.frontAdhaarCard.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (front_adhaar_URL) => {
-            console.log(front_adhaar_URL)
-            data.frontAdhaarCard = front_adhaar_URL;
+        const frontAdhaarCardRef = ref(
+          storage,
+          `user-images/front_adhaar_card/${data.id}`
+        );
+        await uploadBytes(frontAdhaarCardRef, e.target.frontAdhaarCard.files[0])
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (front_adhaar_URL) => {
+              console.log(front_adhaar_URL);
+              data.frontAdhaarCard = front_adhaar_URL;
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload your front picture of aadhaar card")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert("Couldn't upload your front picture of aadhaar card");
+            console.log(er);
+          });
 
-        console.log("uploading front picture of aadhaar card");
+        console.log('uploading front picture of aadhaar card');
       } catch (e) {
-        console.error("Error uploading front picture of aadhaar card: ", e);
+        console.error('Error uploading front picture of aadhaar card: ', e);
       }
 
       // Upload back picture of aadhaar card
       try {
-        const backAdhaarCardRef = ref(storage, `user-images/back_adhaar_card/${data.id}`)
-        await uploadBytes(backAdhaarCardRef, e.target.backAdhaarCard.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (back_adhaar_URL) => {
-            console.log(back_adhaar_URL)
-            data.backAdhaarCard = back_adhaar_URL;
+        const backAdhaarCardRef = ref(
+          storage,
+          `user-images/back_adhaar_card/${data.id}`
+        );
+        await uploadBytes(backAdhaarCardRef, e.target.backAdhaarCard.files[0])
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (back_adhaar_URL) => {
+              console.log(back_adhaar_URL);
+              data.backAdhaarCard = back_adhaar_URL;
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload your back picture of aadhaar card")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert("Couldn't upload your back picture of aadhaar card");
+            console.log(er);
+          });
 
-        console.log("uploading back picture of aadhaar card");
+        console.log('uploading back picture of aadhaar card');
       } catch (e) {
-        console.error("Error uploading back picture of aadhaar card: ", e);
+        console.error('Error uploading back picture of aadhaar card: ', e);
       }
 
       // Upload front picture of driving license
       try {
-        const frontDrivingLicenseRef = ref(storage, `user-images/front_driving_license/${data.id}`)
-        await uploadBytes(frontDrivingLicenseRef, e.target.frontDrivingLicense.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (front_driving_URL) => {
-            console.log(front_driving_URL)
-            data.frontDrivingLicense = front_driving_URL;
+        const frontDrivingLicenseRef = ref(
+          storage,
+          `user-images/front_driving_license/${data.id}`
+        );
+        await uploadBytes(
+          frontDrivingLicenseRef,
+          e.target.frontDrivingLicense.files[0]
+        )
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (front_driving_URL) => {
+              console.log(front_driving_URL);
+              data.frontDrivingLicense = front_driving_URL;
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload your front picture of driving license")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert(
+              "Couldn't upload your front picture of driving license"
+            );
+            console.log(er);
+          });
 
-        console.log("uploading front picture of driving license");
+        console.log('uploading front picture of driving license');
       } catch (e) {
-        console.error("Error uploading front picture of driving license: ", e);
+        console.error('Error uploading front picture of driving license: ', e);
       }
 
       // Upload back picture of driving license
       try {
-        const backDrivingLicenseRef = ref(storage, `user-images/back_driving_license/${data.id}`)
-        await uploadBytes(backDrivingLicenseRef, e.target.backDrivingLicense.files[0]).then((snapshot) => {
-          console.log(snapshot)
-          getDownloadURL(snapshot.ref).then(async (back_driving_URL) => {
-            console.log(back_driving_URL)
-            data.backDrivingLicense = back_driving_URL;
-            await uploadData();
+        const backDrivingLicenseRef = ref(
+          storage,
+          `user-images/back_driving_license/${data.id}`
+        );
+        await uploadBytes(
+          backDrivingLicenseRef,
+          e.target.backDrivingLicense.files[0]
+        )
+          .then((snapshot) => {
+            console.log(snapshot);
+            getDownloadURL(snapshot.ref).then(async (back_driving_URL) => {
+              console.log(back_driving_URL);
+              data.backDrivingLicense = back_driving_URL;
+              await uploadData();
+            });
           })
-        }).catch((er) => {
-          window.alert("Couldn't upload your back picture of driving license")
-          console.log(er);
-        })
+          .catch((er) => {
+            window.alert(
+              "Couldn't upload your back picture of driving license"
+            );
+            console.log(er);
+          });
 
-        console.log("uploading back picture of driving license");
+        console.log('uploading back picture of driving license');
       } catch (e) {
-        console.error("Error uploading back picture of driving license: ", e);
+        console.error('Error uploading back picture of driving license: ', e);
       }
 
-      data.status = "Pending";
+      data.status = 'Pending';
 
-      console.log("uploading data to firestore");
+      console.log('uploading data to firestore');
       console.log(data);
-
-      
 
       try {
         // setError('');
         // setLoading(true);
 
-        let userCred = await signup(
-          data.email,
-          data.password,
-        );
+        let userCred = await signup(data.email, data.password);
         // let user = userCred.user;
         // await db.collection(userType).doc(user.uid).set({
         //   name: data.name,
