@@ -131,10 +131,10 @@ export default function Form() {
   //   );  
   // }
 
-  
+
 
   const onSubmit = async (data, e) => {
-    try{
+    try {
       setError('');
       setLoading(true);
 
@@ -146,6 +146,16 @@ export default function Form() {
       console.log(e.target.backAdhaarCard.files[0]);
       console.log(e.target.frontDrivingLicense.files[0]);
       console.log(e.target.backDrivingLicense.files[0]);
+
+      const uploadData = async () => {
+        // Upload data to firestore
+        try {
+          const docRef = await addDoc(collection(db, "users"), data);
+          console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      };
 
       // set a unique id for each user
       data.id = uuidv4();
@@ -234,6 +244,7 @@ export default function Form() {
           getDownloadURL(snapshot.ref).then(async (back_driving_URL) => {
             console.log(back_driving_URL)
             data.backDrivingLicense = back_driving_URL;
+            await uploadData();
           })
         }).catch((er) => {
           window.alert("Couldn't upload your back picture of driving license")
@@ -250,13 +261,7 @@ export default function Form() {
       console.log("uploading data to firestore");
       console.log(data);
 
-      // Upload data to firestore
-      try {
-        const docRef = await addDoc(collection(db, "users"), data);
-        console.log("Document written with ID: ", docRef.id);
-      } catch (e) {
-        console.error("Error adding document: ", e);
-      }
+      
 
       try {
         // setError('');
@@ -276,13 +281,13 @@ export default function Form() {
       } catch (error) {
         setError(`Failed to create an account! ${error.message}`);
         console.log(error);
-      } 
+      }
       // finally {
       //   setLoading(false);
       // }
       setLoading(false);
     }
-    catch(e){
+    catch (e) {
       console.log(e);
     }
   };

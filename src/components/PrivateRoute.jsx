@@ -10,6 +10,7 @@ export default function PrivateRoute({ children }) {
     'UpdateProfile',
     'Admin_Dashboard',
     'Admin_Attendance',
+    'Admin_Notice',
     'Admin_Result',
     'Admin_CandidateProfile',
   ];

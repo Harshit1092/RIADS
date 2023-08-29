@@ -146,6 +146,27 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
+              title='Notice'
+              to='/admin-notice'
+              icon={<LibraryBooksOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title='Study Material'
+              to='/admin-study'
+              icon={<LibraryBooksOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title='Questions'
+              to='/admin-questions'
+              icon={<LibraryBooksOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title='Result'
               to='/admin-result'
               icon={<AssessmentOutlinedIcon />}

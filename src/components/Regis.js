@@ -5,17 +5,17 @@ export const Regis = () => {
     <div className='order-form bg-gradient-to-r from-black to-[#c54545] bg-gray-100 '>
       <div className='container pt-7 p-4'>
         <div className='col-md-8 offset-md-2'>
-          <div className='m-4'>
+          {/* <div className='m-4'>
             <h2 className='text-center text-white font-bold animate-jump animate-infinite animate-duration-[2000ms]'>
               Search Registration{' '}
             </h2>
-          </div>
-          <form
+          </div> */}
+          {/* <form
             //   method="post"
             method='get'
             action='/'
           >
-            {/* add link above line later and change method to post */}
+            {/* add link above line later and change method to post 
             <div className='row'>
               <div className='col-md-8 offset-md-2'>
                 <div className='row'>
@@ -42,7 +42,7 @@ export const Regis = () => {
                 </div>
               </div>
             </div>
-          </form>
+          </form> */}
         </div>
       </div>
     </div>
