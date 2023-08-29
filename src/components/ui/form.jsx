@@ -14,14 +14,16 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Link, useNavigate } from 'react-router-dom';
+import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, set, useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { collection, addDoc } from "firebase/firestore";
+import { addDoc } from "firebase/firestore";
 import { db } from '../../firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../../firebase';
 import { v4 as uuidv4 } from 'uuid';
+
 
 
 const schema = yup.object().shape({
@@ -104,14 +106,16 @@ const qualificationOptions = [
   'Other',
 ];
 
-export default function Form() {
+export default function Form({ uid , update}) {
   const {
     handleSubmit,
     control,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
+      gender: '',
       qualification: '',
       issuingAuthority: '',
       licenseCategory: '',
@@ -122,6 +126,66 @@ export default function Form() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { signup } = useAuth();
+  const [data, setData] = useState([]);
+  const [frontAdhaarCardUrl, setFrontAdhaarCardUrl] = useState('');
+  const [backAdhaarCardUrl, setBackAdhaarCardUrl] = useState('');
+  const [frontDrivingLicenseUrl, setFrontDrivingLicenseUrl] = useState('');
+  const [backDrivingLicenseUrl, setBackDrivingLicenseUrl] = useState('');
+  const [passportSizePhotoUrl, setPassportSizePhotoUrl] = useState('');
+
+
+  useEffect(() => {
+    const getData = async () => {
+      const q = query(
+        collection(db, 'users'),
+        where('id', '==', uid)
+      );
+      await getDocs(q).then(async (response) => {
+        let data = response.docs[0].data();
+        // console.log(data);
+        setData(data);
+        const frontAdhaarCardRef = ref(storage, `user-images/front_adhaar_card/${data.id}`);
+        const backAdhaarCardRef = ref(storage, `user-images/back_adhaar_card/${data.id}`);
+        const frontDrivingLicenseRef = ref(storage, `user-images/front_driving_license/${data.id}`);
+        const backDrivingLicenseRef = ref(storage, `user-images/back_driving_license/${data.id}`);
+        const passportSizePhotoRef = ref(storage, `user-images/passport_size_photo/${data.id}`);
+        const frontAdhaarCardUrl = await getDownloadURL(frontAdhaarCardRef);
+        const backAdhaarCardUrl = await getDownloadURL(backAdhaarCardRef);
+        const frontDrivingLicenseUrl = await getDownloadURL(frontDrivingLicenseRef);
+        const backDrivingLicenseUrl = await getDownloadURL(backDrivingLicenseRef);
+        const passportSizePhotoUrl = await getDownloadURL(passportSizePhotoRef);
+        setFrontAdhaarCardUrl(frontAdhaarCardUrl);
+        setBackAdhaarCardUrl(backAdhaarCardUrl);
+        setFrontDrivingLicenseUrl(frontDrivingLicenseUrl);
+        setBackDrivingLicenseUrl(backDrivingLicenseUrl);
+        setPassportSizePhotoUrl(passportSizePhotoUrl);
+        setValue('name', data.name);
+        setValue('fathersName', data.fathersName);
+        setValue('dateOfBirth', data.dateOfBirth.toDate().toISOString().split('T')[0]);
+        setValue('age', data.age);
+        setValue('email',data.email);
+        setValue('city', data.city);
+        setValue('pinCode', data.pinCode);
+        setValue('state', data.state);
+        setValue('district', data.district);
+        setValue('address', data.address);
+        setValue('phoneNumber', data.phoneNumber);
+        setValue('adhaarCardNumber', data.adhaarCardNumber);
+        setValue('drivingLicenseNumber', data.drivingLicenseNumber);
+        setValue('licenseIssueDate', data.licenseIssueDate.toDate().toISOString().split('T')[0]);
+        setValue('licenseExpiryDate', data.licenseExpiryDate.toDate().toISOString().split('T')[0]);
+        setValue('password', data.password);
+        setValue('confirmPassword', data.password);
+        setValue('qualification', data.qualification);
+        setValue('licenseCategory', data.licenseCategory);
+        setValue('issuingAuthority', data.issuingAuthority);
+        setValue('gender', data?.gender || '');
+      });
+    };
+    if(uid){
+      getData();
+    }
+  }, [uid,setValue]);
 
   // const LoadingIndicator = props => {
   //   const { promiseInProgress } = usePromiseTracker();
@@ -133,7 +197,7 @@ export default function Form() {
 
 
 
-  const onSubmit = async (data, e) => {
+  const new_onSubmit = async (data, e) => {
     try {
       setError('');
       setLoading(true);
@@ -291,6 +355,150 @@ export default function Form() {
       console.log(e);
     }
   };
+  const existing_onSubmit = async (data, e) => {
+    try {
+      setError('');
+      setLoading(true);
+
+      console.log("heyy");
+
+      console.log(data.passportSizePhoto);
+      console.log(e.target.passportSizePhoto.files[0]);
+      console.log(e.target.frontAdhaarCard.files[0]);
+      console.log(e.target.backAdhaarCard.files[0]);
+      console.log(e.target.frontDrivingLicense.files[0]);
+      console.log(e.target.backDrivingLicense.files[0]);
+
+      const uploadData = async () => {
+        // Upload data to firestore
+        try {
+          const q = query(
+            collection(db, 'users'),
+            where('id', '==', uid)
+          ); // Assuming `uid` is defined in your component
+          await getDocs(q).then(async (response) => {
+            const ref = doc(db, 'users', response.docs[0].id);
+            await updateDoc(ref, data);
+          });
+          console.log("Document updated with ID: ", uid);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      };
+
+
+      // Upload passport size photo
+      try {
+        const profilePicRef = ref(storage, `user-images/passport_size_photo/${data.id}`)
+        await uploadBytes(profilePicRef, e.target.passportSizePhoto.files[0]).then((snapshot) => {
+          console.log(snapshot)
+          getDownloadURL(snapshot.ref).then(async (passport_URL) => {
+            console.log(passport_URL)
+            data.passportSizePhoto = passport_URL;
+          })
+        }).catch((er) => {
+          window.alert("Couldn't upload your passport size photo")
+          console.log(er);
+        })
+
+        console.log("uploading passport size photo");
+      } catch (e) {
+        console.error("Error uploading passport size photo: ", e);
+      }
+
+      // Upload front picture of aadhaar card
+      try {
+        const frontAdhaarCardRef = ref(storage, `user-images/front_adhaar_card/${data.id}`)
+        await uploadBytes(frontAdhaarCardRef, e.target.frontAdhaarCard.files[0]).then((snapshot) => {
+          console.log(snapshot)
+          getDownloadURL(snapshot.ref).then(async (front_adhaar_URL) => {
+            console.log(front_adhaar_URL)
+            data.frontAdhaarCard = front_adhaar_URL;
+          })
+        }).catch((er) => {
+          window.alert("Couldn't upload your front picture of aadhaar card")
+          console.log(er);
+        })
+
+        console.log("uploading front picture of aadhaar card");
+      } catch (e) {
+        console.error("Error uploading front picture of aadhaar card: ", e);
+      }
+
+      // Upload back picture of aadhaar card
+      try {
+        const backAdhaarCardRef = ref(storage, `user-images/back_adhaar_card/${data.id}`)
+        await uploadBytes(backAdhaarCardRef, e.target.backAdhaarCard.files[0]).then((snapshot) => {
+          console.log(snapshot)
+          getDownloadURL(snapshot.ref).then(async (back_adhaar_URL) => {
+            console.log(back_adhaar_URL)
+            data.backAdhaarCard = back_adhaar_URL;
+          })
+        }).catch((er) => {
+          window.alert("Couldn't upload your back picture of aadhaar card")
+          console.log(er);
+        })
+
+        console.log("uploading back picture of aadhaar card");
+      } catch (e) {
+        console.error("Error uploading back picture of aadhaar card: ", e);
+      }
+
+      // Upload front picture of driving license
+      try {
+        const frontDrivingLicenseRef = ref(storage, `user-images/front_driving_license/${data.id}`)
+        await uploadBytes(frontDrivingLicenseRef, e.target.frontDrivingLicense.files[0]).then((snapshot) => {
+          console.log(snapshot)
+          getDownloadURL(snapshot.ref).then(async (front_driving_URL) => {
+            console.log(front_driving_URL)
+            data.frontDrivingLicense = front_driving_URL;
+          })
+        }).catch((er) => {
+          window.alert("Couldn't upload your front picture of driving license")
+          console.log(er);
+        })
+
+        console.log("uploading front picture of driving license");
+      } catch (e) {
+        console.error("Error uploading front picture of driving license: ", e);
+      }
+
+      // Upload back picture of driving license
+      try {
+        const backDrivingLicenseRef = ref(storage, `user-images/back_driving_license/${data.id}`)
+        await uploadBytes(backDrivingLicenseRef, e.target.backDrivingLicense.files[0]).then((snapshot) => {
+          console.log(snapshot)
+          getDownloadURL(snapshot.ref).then(async (back_driving_URL) => {
+            console.log(back_driving_URL)
+            data.backDrivingLicense = back_driving_URL;
+            await uploadData();
+          })
+        }).catch((er) => {
+          window.alert("Couldn't upload your back picture of driving license")
+          console.log(er);
+        })
+
+        console.log("uploading back picture of driving license");
+      } catch (e) {
+        console.error("Error uploading back picture of driving license: ", e);
+      }
+
+      data.status = "Pending";
+
+      console.log("uploading data to firestore");
+      console.log(data);
+
+      
+
+      // finally {
+      //   setLoading(false);
+      // }
+      setLoading(false);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Container className='my-20'>
@@ -312,7 +520,7 @@ export default function Form() {
           Registration Form
         </Typography>
       </Box>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(update === 'true' ? existing_onSubmit : new_onSubmit )}>
         <Grid container spacing={6}>
           <Grid item xs={12} sm={4}>
             <Controller
@@ -326,6 +534,7 @@ export default function Form() {
                   error={!!errors.name}
                   helperText={errors.name?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -342,6 +551,7 @@ export default function Form() {
                   error={!!errors.fathersName}
                   helperText={errors.fathersName?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -385,16 +595,16 @@ export default function Form() {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Controller
+          <Controller
               control={control}
               name='gender'
               render={({ field }) => (
                 <FormControl error={!!errors.gender} fullWidth>
-                  <InputLabel>Select Gender</InputLabel>
+                  <InputLabel>Gender</InputLabel>
                   <Select {...field}>
                     <MenuItem value='Male'>Male</MenuItem>
                     <MenuItem value='Female'>Female</MenuItem>
-                    <MenuItem value='Other'>Other</MenuItem>
+                    <MenuItem value='Other'>other</MenuItem>
                   </Select>
                   {errors.gender && (
                     <Typography color='error' variant='caption'>
@@ -417,6 +627,7 @@ export default function Form() {
                   error={!!errors.phoneNumber}
                   helperText={errors.phoneNumber?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -433,6 +644,7 @@ export default function Form() {
                   error={!!errors.email}
                   helperText={errors.email?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -464,6 +676,7 @@ export default function Form() {
             <Controller
               control={control}
               name='passportSizePhoto'
+              defaultValue={passportSizePhotoUrl}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -492,6 +705,7 @@ export default function Form() {
                   error={!!errors.address}
                   helperText={errors.address?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -508,6 +722,7 @@ export default function Form() {
                   error={!!errors.city}
                   helperText={errors.city?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -524,6 +739,7 @@ export default function Form() {
                   error={!!errors.pinCode}
                   helperText={errors.pinCode?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -540,6 +756,7 @@ export default function Form() {
                   error={!!errors.state}
                   helperText={errors.state?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -556,6 +773,7 @@ export default function Form() {
                   error={!!errors.adhaarCardNumber}
                   helperText={errors.adhaarCardNumber?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -572,6 +790,7 @@ export default function Form() {
                   error={!!errors.district}
                   helperText={errors.district?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -580,6 +799,7 @@ export default function Form() {
             <Controller
               control={control}
               name='frontAdhaarCard'
+              defaultValue={frontAdhaarCardUrl}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -600,6 +820,7 @@ export default function Form() {
             <Controller
               control={control}
               name='backAdhaarCard'
+              defaultValue={backAdhaarCardUrl}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -627,6 +848,7 @@ export default function Form() {
                   error={!!errors.drivingLicenseNumber}
                   helperText={errors.drivingLicenseNumber?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -716,6 +938,7 @@ export default function Form() {
             <Controller
               control={control}
               name='frontDrivingLicense'
+              defaultValue={frontDrivingLicenseUrl}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -735,6 +958,7 @@ export default function Form() {
             <Controller
               control={control}
               name='backDrivingLicense'
+              defaultValue={backDrivingLicenseUrl}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -763,6 +987,7 @@ export default function Form() {
                   error={!!errors.password}
                   helperText={errors.password?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />
@@ -780,6 +1005,7 @@ export default function Form() {
                   error={!!errors.confirmPassword}
                   helperText={errors.confirmPassword?.message}
                   fullWidth
+                  InputLabelProps={{shrink: true,}}
                 />
               )}
             />

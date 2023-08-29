@@ -1,21 +1,49 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-
 import { db } from '../../../firebase';
 import { mockDataRegistration } from '../data/mockData';
 import { tokens } from '../theme';
+import * as yup from 'yup';
+import { storage } from '../../../firebase';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller, set, useForm } from 'react-hook-form';
 // import { where } from 'firebase/firestore';
-import { collection, getDocs, orderBy, query, where, updateDoc, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where, updateDoc, doc, getDoc, addDoc } from 'firebase/firestore';
 import { useAuth } from '../../../contexts/AuthContext';
 import Background from 'hero-slider/dist/components/Slide/Background';
 import { Style } from '@mui/icons-material';
-
+import { v4 as uuidv4 } from 'uuid';
+import Form from '../../../components/ui/form';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  Button,
+  Container,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@material-ui/core';
+import Modal from '@material-ui/core/Modal';
+// import { Controller } from 'react-hook-form';
 
 
 const TableRow = ({ data }) => {
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
   return (
 
     <tr>
@@ -80,32 +108,60 @@ const TableRow = ({ data }) => {
                   collection(db, 'users'),
                   where('id', '==', data.id)
                 );
-                await getDocs(q).then( async (response) => {
+                await getDocs(q).then(async (response) => {
                   let data = response.docs.map((ele) => ({ ...ele.data() }));
                   const ref = doc(db, 'users', response.docs[0].id);
                   await updateDoc(ref, {
                     status: 'Approved',
                   });
                 });
-                
+
               };
 
               updateID();
 
-              
-              
+
+
 
             }}
 
           >
             {data.status}
-          </button>          
+          </button>
 
         </div>
+      </td>
+      <td className='px-6 py-4 whitespace-nowrap'>
+        <div className='text-sm text-gray-900'>
+          <button className='px-3 py-2 text-white' onClick={handleOpen} style={{ backgroundColor: 'gray' }}>Edit Profile</button>
+        </div>
+        <Modal onClose={handleClose} open={open}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 900,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+              maxHeight: "80%", // Adjust this value as needed
+              overflow: "auto",
+            }}
+          >
+            <div>
+              <Form uid ={data.id} update={'true'}/>
+            </div>
+          </Box>
+        </Modal>
+
       </td>
     </tr>
   )
 }
+
 
 const Admin_CandidateProfile = () => {
   const theme = useTheme();
@@ -181,7 +237,7 @@ const Admin_CandidateProfile = () => {
               View & Edit Candidate Profiles
             </Typography>
           </div>
-          <hr class='h-px my-8 bg-gray-200 border-2 dark:bg-gray-700'></hr>
+          <hr className='h-px my-8 bg-gray-200 border-2 dark:bg-gray-700'></hr>
           {/*make table data */}
           <div className='flex flex-col'>
             <div className='-my-4 overflow-x-auto '>
@@ -252,10 +308,17 @@ const Admin_CandidateProfile = () => {
                           Status
                         </th>
 
+                        <th
+                          scope='col'
+                          className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          Edit Profile
+                        </th>
+
                       </tr>
                     </thead>
                     <tbody className='bg-white divide-y divide-gray-200'>
-                        {data.map((ele) => (
+                      {data.map((ele) => (
                         <TableRow data={ele} />
                       ))}
                     </tbody>
