@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
@@ -6,6 +6,19 @@ import { mockDataAttendance, mockDataRegistration } from '../data/mockData';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
+
+import { useAuth } from '../../../contexts/AuthContext';
+import { db } from '../../../firebase';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 
 const Candidate_ViewRegistration = () => {
   const theme = useTheme();
@@ -36,6 +49,35 @@ const Candidate_ViewRegistration = () => {
     column2: mockDataRegistration[index],
   }));
 
+  const { currentUser } = useAuth();
+
+  const [data, setData] = useState([]);
+
+
+  useEffect(() => {
+    // fetch registration data from database
+
+    console.log(currentUser.email);
+    const getData = async () => {
+      const q = query(
+        collection(db, 'users'),
+        where('email', '==', currentUser.email)
+      );
+      await getDocs(q).then((response) => {
+        let data = response.docs.map((ele) => ({ ...ele.data() }));
+        // console.log(data[0].score);
+        // setScore(data[0].score);
+        let result = (({ id, name, fathersName, email, age, gender, address, district, city, state, pinCode, phoneNumber }) => ({ id, name, fathersName, email, age, gender, address, district, city, state, pinCode, phoneNumber }))(data[0]);
+        console.log(result);
+        setData(result);
+        // console.log(typeof data )
+      });
+    }
+
+    getData();
+  }, []);
+
+
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
       <div>
@@ -59,8 +101,26 @@ const Candidate_ViewRegistration = () => {
                 <div className='shadow overflow-hidden border-b border-gray-200 h-[500px] overflow-y-auto sm:rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-200'>
                     <tbody className='bg-white divide-y divide-gray-200'>
-                      {column1Data.map((item, index) => (
-                        <tr key={index}>
+                      {
+                        data && Object.keys(data).map((item, index) => (
+                          <tr key={index}>
+                            <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 bg-gray-50 uppercase tracking-wider'>
+                              {item}
+                            </th>
+                            <td className='px-6 py-4 whitespace-nowrap'>
+                              <div className='flex items-center'>
+                                <div className='ml-4'>
+                                  <div className='text-sm font-medium text-gray-900'>
+                                    {data[item]}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      }
+                      {/* {data?.map((item) => (
+                        <tr key={item}>
                           <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 bg-gray-50 uppercase tracking-wider'>
                             {item}
                           </th>
@@ -68,13 +128,13 @@ const Candidate_ViewRegistration = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataRegistration[index]}
+                                  //  {mockDataRegistration[index]} 
                                 </div>
                               </div>
                             </div>
                           </td>
                         </tr>
-                      ))}
+                      ))} */}
                     </tbody>
                   </table>
                 </div>

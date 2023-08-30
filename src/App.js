@@ -20,7 +20,7 @@ import Admin_Questions from './screens/AdminPanel/scenes/Admin_Questions.js';
 import Admin_Result from './screens/AdminPanel/scenes/Admin_Result.js';
 import Admin_Study from './screens/AdminPanel/scenes/Admin_Study.js';
 import Candidate_Attendance from './screens/CandidatePanel/scenes/Candidate_Attendance.js';
-import Candidate_Dashboard from './screens/CandidatePanel/scenes/Candidate_Dashboard.js';
+// import Candidate_Dashboard from './screens/CandidatePanel/scenes/Candidate_Dashboard.js';
 import Candidate_Result from './screens/CandidatePanel/scenes/Candidate_Result.js';
 import Candidate_StudyMaterial from './screens/CandidatePanel/scenes/Candidate_StudyMaterial.js';
 import Candidate_Test from './screens/CandidatePanel/scenes/Candidate_Test.js';
@@ -58,14 +58,14 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route
+          {/* <Route
             path='/candidate-dashboard'
             element={
               <PrivateRoute>
                 <Candidate_Dashboard />
               </PrivateRoute>
             }
-          />
+          /> */}
           <Route
             path='/candidate-attendance'
             element={
