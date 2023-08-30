@@ -1,16 +1,56 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
-import { mockDataAttendance, mockDataRegistration } from '../data/mockData';
+// import { mockDataAttendance, mockDataRegistration } from '../data/mockData';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
+
+import { useAuth } from '../../../contexts/AuthContext';
+import { db } from '../../../firebase';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 
 const Candidate_Attendance = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
+
+  const { currentUser } = useAuth();
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    // fetch attendance data from database
+
+    console.log(currentUser.email);
+    const getData = async () => {
+      const q = query(
+        collection(db, 'users'),
+        where('email', '==', currentUser.email)
+      );
+      await getDocs(q).then((response) => {
+        let data = response.docs.map((ele) => ({ ...ele.data() }));
+        // console.log(data[0].score);
+        // setScore(data[0].score);
+        console.log(data);
+        setData(data);
+      });
+    }
+
+    getData();
+
+  }, []);
+
 
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
@@ -40,7 +80,7 @@ const Candidate_Attendance = () => {
                           scope='col'
                           className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
-                          S. No.
+                          UID
                         </th>
                         <th
                           scope='col'
@@ -52,36 +92,39 @@ const Candidate_Attendance = () => {
                           scope='col'
                           className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
-                          Batch
+                          Date
                         </th>
-                        <th
+                        {/* <th
                           scope='col'
                           className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
                           Hour of classes attended
-                        </th>
+                        </th> */}
                         <th
                           scope='col'
                           className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
                           Attendence status
                         </th>
-                        <th
+                        {/* <th
                           scope='col'
                           className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
                           Click to Download Attendance Report
-                        </th>
+                        </th> */}
                       </tr>
                     </thead>
                     <tbody className='bg-white divide-y divide-gray-200'>
-                      {mockDataAttendance.map((mockDataAttendance) => (
-                        <tr key={mockDataAttendance.id}>
+                      {data[0]?.attendance?.map((att) => {
+                        console.log(att)
+                        console.log("HELLO")
+                        return (
+                        <tr key={data.id}>
                           <td className='px-6 py-4 whitespace-nowrap'>
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataAttendance.id}
+                                  {data[0].id}
                                 </div>
                               </div>
                             </div>
@@ -90,7 +133,7 @@ const Candidate_Attendance = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataAttendance.name}
+                                  {data[0].name}
                                 </div>
                               </div>
                             </div>
@@ -99,39 +142,44 @@ const Candidate_Attendance = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataAttendance.batch}
+                                  {att}
                                 </div>
                               </div>
                             </div>
                           </td>
+                          {/* <td className='px-6 py-4 whitespace-nowrap'>
+                            <div className='flex items-center'>
+                              <div className='ml-4'>
+                                <div className='text-sm font-medium text-gray-900'>
+                                  {data.hours_attended}
+                                </div>
+                              </div>
+                            </div>
+                          </td> */}
                           <td className='px-6 py-4 whitespace-nowrap'>
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataAttendance.hours_attended}
+                                  {/* {data.attendance_status} */}
+                                  Present
                                 </div>
                               </div>
                             </div>
                           </td>
-                          <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='flex items-center'>
-                              <div className='ml-4'>
-                                <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataAttendance.attendance}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                          {/* <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
                             <a
                               href='#'
                               className='text-indigo-600 hover:text-indigo-900'
                             >
                               Download
                             </a>
-                          </td>
+                          </td> */}
                         </tr>
-                      ))}
+                        )
+                      }
+                      )
+                      
+                    }
                     </tbody>
                   </table>
                 </div>

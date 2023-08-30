@@ -41,7 +41,7 @@ export default function Admin_Attendance() {
       });
     };
     getData();
-  });
+  }, []);
 
   const {
     handleSubmit,

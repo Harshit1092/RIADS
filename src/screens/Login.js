@@ -33,7 +33,7 @@ export default function Login() {
       });
     };
     getData();
-  });
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -53,7 +53,7 @@ export default function Login() {
       if (admin) {
         navigate('/admin-dashboard');
       } else {
-        navigate('/candidate-dashboard');
+        navigate('/candidate-viewregistration');
       }
 
       // const userType = document.querySelector(
