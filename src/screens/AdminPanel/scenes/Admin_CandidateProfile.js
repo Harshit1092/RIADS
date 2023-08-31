@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Modal from '@material-ui/core/Modal';
-import { Style } from '@mui/icons-material';
+import { Edit, Style } from '@mui/icons-material';
 import { Box, Typography, useTheme } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 // import { where } from 'firebase/firestore';
 import {
   addDoc,
@@ -35,6 +35,23 @@ const TableRow = ({ data }) => {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  // variables and functions for modal
+  const [approvalIsOpen, setApprovalIsOpen] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+
+  function openApprovalModal() {
+    setApprovalIsOpen(true);
+  }
+
+  function closeApprovalModal() {
+    setApprovalIsOpen(false);
+  }
+
+  // -----------------------------------------
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -43,8 +60,36 @@ const TableRow = ({ data }) => {
     setOpen(true);
   };
 
+  // change the status to approved
+  // update the database status to approved
+
+  const updateID = async () => {
+    if(startDate === '' || endDate === '') {
+      alert('Please select both dates');
+      return ;
+    }
+
+    const q = query(
+      collection(db, 'users'),
+      where('id', '==', data.id)
+    );
+
+    await getDocs(q).then(async (response) => {
+      let data = response.docs.map((ele) => ({ ...ele.data() }));
+      const ref = doc(db, 'users', response.docs[0].id);
+      await updateDoc(ref, {
+        status: 'Approved',
+        batch_from: startDate,
+        batch_to: endDate,
+      });
+      window.location.reload();
+    });
+
+  };
+
+
   return (
-    <tr>
+    <tr key={data.id}>
       <td className='px-6 py-4 whitespace-nowrap'>
         <div className='flex items-center'>
           <div className='ml-4'>
@@ -81,32 +126,43 @@ const TableRow = ({ data }) => {
             style={{
               backgroundColor: data.status === 'Pending' ? 'red' : 'green',
             }}
-            onClick={() => {
-              console.log('clicked');
-
-              // change the status to approved
-              // update the database status to approved
-
-              const updateID = async () => {
-                const q = query(
-                  collection(db, 'users'),
-                  where('id', '==', data.id)
-                );
-                await getDocs(q).then(async (response) => {
-                  let data = response.docs.map((ele) => ({ ...ele.data() }));
-                  const ref = doc(db, 'users', response.docs[0].id);
-                  await updateDoc(ref, {
-                    status: 'Approved',
-                  });
-                });
-              };
-
-              updateID();
-            }}
+            onClick={openApprovalModal}
           >
             {data.status}
           </button>
         </div>
+
+        <Modal onClose={closeApprovalModal} open={approvalIsOpen && data.status!=="Approved"}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 900,
+              bgcolor: 'background.paper',
+              border: '2px solid #000',
+              boxShadow: 24,
+              p: 4,
+              maxHeight: '80%', // Adjust this value as needed
+              overflow: 'auto',
+            }}
+          >
+            <div className='flex justify-center flex-col'>
+              <div className='flex justify-center flex-col p-2'>
+                <label>Select start date</label>
+                <input type='date' onChange={(e)=>setStartDate(e.target.value)} id="start_date"/>
+              </div>
+
+              <div className='flex justify-center flex-col p-2'>
+                <label>Select end date</label>
+                <input type='date' onChange={(e)=>setEndDate(e.target.value)} id="end_date"/>
+              </div>
+              
+              <button className='bg-green-400 text-white text-xl hover:bg-green-300 active:bg-green-400 p-2' onClick={updateID}>Approve</button>
+            </div>
+          </Box>
+        </Modal>
       </td>
       <td className='px-6 py-4 whitespace-nowrap'>
         <div className='text-sm text-gray-900'>
@@ -143,6 +199,33 @@ const TableRow = ({ data }) => {
     </tr>
   );
 };
+
+
+const EditProfileModal = ({data_id, handleClose, open}) => {
+    return(
+      <Modal onClose={handleClose} open={open}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 900,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,
+            maxHeight: '80%', // Adjust this value as needed
+            overflow: 'auto',
+          }}
+        >
+          <div>
+            <Form uid={data_id} update={'true'} />
+          </div>
+        </Box>
+      </Modal>
+    )
+}
 
 const Admin_CandidateProfile = () => {
   const theme = useTheme();
@@ -194,9 +277,173 @@ const Admin_CandidateProfile = () => {
       });
     };
     getData();
-  });
+  }, []);
 
   // console.log(data);
+
+  // modal variables and functions
+  const [open, setOpen] = useState(false);
+  const [approvalIsOpen, setApprovalIsOpen] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const [data_id, setData_id] = useState(0); // to show the modal of that particular id
+
+
+  function openApprovalModal(row_data_id) {
+    setApprovalIsOpen(true);
+    setData_id(row_data_id);
+  }
+
+  function closeApprovalModal() {
+    setApprovalIsOpen(false);
+  }
+
+  // -----------------------------------------
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = (row_data_id) => {
+    setData_id(row_data_id);
+    setOpen(true);
+  };
+
+  // change the status to approved
+  // update the database status to approved
+
+  const updateID = async (data_id) => {
+    if(startDate === '' || endDate === '') {
+      alert('Please select both dates');
+      return ;
+    }
+
+    const q = query(
+      collection(db, 'users'),
+      where('id', '==', data_id)
+    );
+
+    await getDocs(q).then(async (response) => {
+      let data = response.docs.map((ele) => ({ ...ele.data() }));
+      const ref = doc(db, 'users', response.docs[0].id);
+      await updateDoc(ref, {
+        status: 'Approved',
+        batch_from: startDate,
+        batch_to: endDate,
+      });
+      window.location.reload();
+    });
+
+  };
+  // ------------------------------------------------------------
+
+  // grid data schema
+  const dataColumns = [
+    { field: 'id', headerName: 'ID', width: 100 },
+    {
+      field: 'name',
+      headerName: 'NAME',
+      width: 200,
+    },
+    {
+      field: 'fathersName',
+      headerName: "FATHER'S NAME",
+      width: 200,
+    },
+    {
+      field: 'email',
+      headerName: "EMAIL",
+      width: 200,
+    },
+    {
+      field: 'state',
+      headerName: "STATE",
+      width: 200,
+    },
+    {
+      field: 'age',
+      headerName: "AGE",
+      width: 200,
+    },
+    {
+      field: 'batch_from',
+      headerName: "BATCH START DATE",
+      width: 200,
+      sortable: false,
+      disableColumnMenu:true,
+      renderCell: (params) =>{
+        return (
+          <div>
+          {
+            params.value in ["", " ", undefined, null] ? 
+            
+            <div>Not Approved</div> 
+            : 
+            <div>{params.value.toLocaleString('en-IN')}</div>
+          }
+          </div>
+        )
+      },
+    },
+    {
+      field: 'batch_to',
+      headerName: "BATCH END DATE",
+      width: 200,
+      sortable: false,
+      disableColumnMenu:true,
+      renderCell: (params) =>{
+        return (
+          <div>
+          {
+            params.value in ["", " ", undefined, null] ? 
+            
+            <div>Not Approved</div> 
+            : 
+            <div>{params.value}</div>
+          }
+          </div>
+        )
+      },
+    },
+    {
+      field: 'gender',
+      headerName: "GENDER",
+      width: 200,
+    },
+    {
+      field: 'phoneNumber',
+      headerName: "PHONE NUMBER",
+      width: 200,
+    },
+    {
+      field: 'status',
+      headerName: "STATUS",
+      width: 200,
+      disableClickEventBubbling: true,
+      renderCell: (params) =>
+          <button onClick={() => openApprovalModal(params.row.id)}>
+            {params.value}
+          </button>
+    },
+    {
+      field: 'editProfile',
+      headerName: "EDIT PROFILE",
+      width: 200,
+      sortable: false,
+      disableColumnMenu:true,
+      renderCell: (params) =>{
+        return (
+        <button onClick={() => handleOpen(params.row.id)}>
+          Edit Profile
+        </button>
+        )
+      },
+    },
+    
+  ];
+
+  // console.log(data)
 
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
@@ -219,7 +466,73 @@ const Admin_CandidateProfile = () => {
             <div className='-my-4 overflow-x-auto '>
               <div className='py-6 align-middle inline-block min-w-full pl-4 pr-4'>
                 <div className='shadow  border-b border-gray-200 rounded-lg'>
-                  <table className='min-w-full divide-y divide-gray-200'>
+                <div style={{ height: 400, width: '100%' }}>
+                <DataGrid
+                  rows={data}
+                  columns={dataColumns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5]}
+                  components={{
+                    Toolbar: GridToolbar,
+                  }}
+                />
+
+                  <Modal onClose={closeApprovalModal} open={approvalIsOpen}>
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 900,
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,
+                        maxHeight: '80%', // Adjust this value as needed
+                        overflow: 'auto',
+                      }}
+                    >
+                      <div className='flex justify-center flex-col'>
+                        <div className='flex justify-center flex-col p-2'>
+                          <label>Select start date</label>
+                          <input type='date' onChange={(e)=>setStartDate(e.target.value)} id="start_date"/>
+                        </div>
+
+                        <div className='flex justify-center flex-col p-2'>
+                          <label>Select end date</label>
+                          <input type='date' onChange={(e)=>setEndDate(e.target.value)} id="end_date"/>
+                        </div>
+                        
+                        <button className='bg-green-400 text-white text-xl hover:bg-green-300 active:bg-green-400 p-2' onClick={()=>{updateID(data_id)}}>Approve</button>
+                      </div>
+                    </Box>
+                  </Modal>
+
+                <Modal onClose={handleClose} open={open}>
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: 900,
+                      bgcolor: 'background.paper',
+                      border: '2px solid #000',
+                      boxShadow: 24,
+                      p: 4,
+                      maxHeight: '80%', // Adjust this value as needed
+                      overflow: 'auto',
+                    }}
+                  >
+                    <div>
+                      <Form uid={data_id} update={'true'} />
+                    </div>
+                  </Box>
+                </Modal>
+
+                </div>
+                  {/* <table className='min-w-full divide-y divide-gray-200'>
                     <thead className='bg-gray-50'>
                       <tr>
                         <th
@@ -297,7 +610,7 @@ const Admin_CandidateProfile = () => {
                         <TableRow data={ele} />
                       ))}
                     </tbody>
-                  </table>
+                  </table> */}
                 </div>
               </div>
             </div>
