@@ -32,3 +32,46 @@ export const mockDataResult = [
     result_status: 'Pass',
   },
 ];
+
+export const mockDataContacts = [
+  {
+    id: 1,
+    name: 'Refresher on HMV Drivers',
+    download: 'Download',
+  },
+  {
+    id: 2,
+    name: 'Refresher Course on HMV Drivers',
+    download: 'Download',
+  },
+  {
+    id: 3,
+    name: 'Refresher Course on HMV Drivers',
+    download: 'Download',
+  },
+  {
+    id: 4,
+    name: 'Refresher Course on HMV Drivers',
+    download: 'Download',
+  },
+  {
+    id: 5,
+    name: 'Refresher Course on HMV Drivers',
+    download: 'Download',
+  },
+  {
+    id: 6,
+    name: 'Refresher Course on HMV Drivers',
+    download: 'Download',
+  },
+  {
+    id: 7,
+    name: 'Refresher Course on HMV Drivers',
+    download: 'Download',
+  },
+  {
+    id: 8,
+    name: 'Refresher Course on HMV Drivers yashasav',
+    download: 'Download',
+  },
+]

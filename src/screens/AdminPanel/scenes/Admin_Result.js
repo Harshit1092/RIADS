@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
@@ -7,10 +7,43 @@ import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
 
+import { db } from '../../../firebase';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
+
 const Admin_Result = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    // fetch result data from database
+
+    const getData = async () => {
+      const q = query(
+        collection(db, 'users'),
+      );
+      await getDocs(q).then((response) => {
+        let data = response.docs.map((ele) => ({ ...ele.data() }));
+        // console.log(data[0].score);
+        // setScore(data[0].score);
+        setData(data);
+      });
+    }
+
+    getData();
+  }, []);
+
 
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
@@ -70,21 +103,27 @@ const Admin_Result = () => {
                           scope='col'
                           className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
-                          Batch
+                          Batch FROM
                         </th>
                         <th
                           scope='col'
                           className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
-                          Marksheet
+                          Batch TO
                         </th>
+                        {/* <th
+                          scope='col'
+                          className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
+                        >
+                          Marksheet
+                        </th> */}
                         <th
                           scope='col'
                           className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
                           Pass/Fail
                         </th>
-                        <th
+                        {/* <th
                           scope='col'
                           className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
@@ -95,17 +134,17 @@ const Admin_Result = () => {
                           className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
                         >
                           Send Email to Download Certificate
-                        </th>
+                        </th> */}
                       </tr>
                     </thead>
                     <tbody className='bg-white divide-y divide-gray-200'>
-                      {mockDataResult.map((mockDataResult) => (
-                        <tr key={mockDataResult.uid}>
+                      {data.map((data) => (
+                        <tr key={data.uid}>
                           <td className='px-6 py-4 whitespace-nowrap'>
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataResult.uid}
+                                  {data.id}
                                 </div>
                               </div>
                             </div>
@@ -114,7 +153,7 @@ const Admin_Result = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataResult.name}
+                                  {data.name}
                                 </div>
                               </div>
                             </div>
@@ -123,7 +162,7 @@ const Admin_Result = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataResult.father_mother_name}
+                                  {data.fathersName}
                                 </div>
                               </div>
                             </div>
@@ -132,7 +171,7 @@ const Admin_Result = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataResult.age}
+                                  {data.age}
                                 </div>
                               </div>
                             </div>
@@ -141,7 +180,7 @@ const Admin_Result = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataResult.gender}
+                                  {data.gender}
                                 </div>
                               </div>
                             </div>
@@ -150,12 +189,30 @@ const Admin_Result = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataResult.batch}
+                                  {data.batch_from}
                                 </div>
                               </div>
                             </div>
                           </td>
-                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                          <td className='px-6 py-4 whitespace-nowrap'>
+                            <div className='flex items-center'>
+                              <div className='ml-4'>
+                                <div className='text-sm font-medium text-gray-900'>
+                                  {data.batch_to}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className='px-6 py-4 whitespace-nowrap'>
+                            <div className='flex items-center'>
+                              <div className='ml-4'>
+                                <div className='text-sm font-medium text-gray-900'>
+                                  {data.score >= 30 ? 'Pass' : 'Fail'}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          {/* <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
                             <a
                               href='#'
                               className='text-indigo-600 hover:text-indigo-900'
@@ -167,7 +224,7 @@ const Admin_Result = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {mockDataResult.status}
+                                  {data.status}
                                 </div>
                               </div>
                             </div>
@@ -187,7 +244,7 @@ const Admin_Result = () => {
                             >
                               Email
                             </a>
-                          </td>
+                          </td> */}
                         </tr>
                       ))}
                     </tbody>

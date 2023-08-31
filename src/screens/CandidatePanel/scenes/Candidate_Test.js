@@ -56,7 +56,7 @@ const CandidateTest = () => {
       });
     };
     getData();
-  });
+  }, []);
 
   useEffect(() => {
     const getData = async () => {
