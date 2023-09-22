@@ -1,11 +1,13 @@
 import React from 'react';
 import HeroSlider, { Slide } from 'hero-slider';
 
-import img1 from '../images/1.jpg';
-import img2 from '../images/2.jpg';
-import img3 from '../images/3.jpg';
-import img4 from '../images/4.jpg';
-import img5 from '../images/5.jpg';
+import img1 from '../images/1.jpeg';
+import img2 from '../images/2.jpeg';
+import img3 from '../images/3.jpeg';
+import img4 from '../images/4.jpeg';
+import img5 from '../images/5.jpeg';
+import img6 from '../images/6.jpeg';
+import img7 from '../images/7.jpeg';
 
 export const Slider = () => {
   return (
@@ -74,6 +76,26 @@ export const Slider = () => {
             className='h-screen flex items-center justify-center bg-[#c54545] bg-center'
             style={{
               backgroundImage: `url(${img5})
+                `,
+              backgroundAttachment: 'fixed',
+            }}
+          ></div>
+        </Slide>
+        <Slide>
+          <div
+            className='h-screen flex items-center justify-center bg-[#c54545] bg-center'
+            style={{
+              backgroundImage: `url(${img6})
+                `,
+              backgroundAttachment: 'fixed',
+            }}
+          ></div>
+        </Slide>
+        <Slide>
+          <div
+            className='h-screen flex items-center justify-center bg-[#c54545] bg-center'
+            style={{
+              backgroundImage: `url(${img7})
                 `,
               backgroundAttachment: 'fixed',
             }}
