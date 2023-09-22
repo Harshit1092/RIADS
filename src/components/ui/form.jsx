@@ -395,7 +395,7 @@ export default function Form({ uid, update }) {
         //   email: data.email,
         // });
 
-        navigate(`/candidate-dashboard`);
+        navigate(`/candidate-viewregistration`);
       } catch (error) {
         setError(`Failed to create an account! ${error.message}`);
         console.log(error);
