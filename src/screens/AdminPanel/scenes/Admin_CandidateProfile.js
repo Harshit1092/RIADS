@@ -376,11 +376,11 @@ const Admin_CandidateProfile = () => {
         return (
           <div>
           {
-            params.value in ["", " ", undefined, null] ? 
+            params?.value in ["", " ", undefined, null] ? 
             
             <div>Not Approved</div> 
             : 
-            <div>{params.value.toLocaleString('en-IN')}</div>
+            <div>{params?.value?.toLocaleString('en-IN')}</div>
           }
           </div>
         )
@@ -396,11 +396,11 @@ const Admin_CandidateProfile = () => {
         return (
           <div>
           {
-            params.value in ["", " ", undefined, null] ? 
+            params?.value in ["", " ", undefined, null] ? 
             
             <div>Not Approved</div> 
             : 
-            <div>{params.value}</div>
+            <div>{params?.value}</div>
           }
           </div>
         )
@@ -422,9 +422,11 @@ const Admin_CandidateProfile = () => {
       width: 200,
       disableClickEventBubbling: true,
       renderCell: (params) =>
+          params ? 
           <button onClick={() => openApprovalModal(params.row.id)}>
-            {params.value}
+            {params?.value }
           </button>
+          : null
     },
     {
       field: 'editProfile',

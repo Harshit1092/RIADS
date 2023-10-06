@@ -202,7 +202,7 @@ const Admin_Result = () => {
         });
 
         // setInfo(InfoisList);
-        console.log(InfoisList);
+        // console.log(InfoisList);
         // Club the data with the same id
         const unique = [...new Set(InfoisList.map((item) => item.id))];
         const uniqueData = [];
@@ -210,10 +210,7 @@ const Admin_Result = () => {
           const data = InfoisList.filter((item) => item.id === id);
           uniqueData.push(data);
         });
-        console.log(uniqueData);
-        setInfo(uniqueData);
-
-        // console.log(uniqueData[0][0].QuestionId);
+        setInfo([...uniqueData]);
       });
   }, []);
 
@@ -569,15 +566,16 @@ const Admin_Result = () => {
                         </th>
                       </tr>
                     </thead>
-                    {}
-                    {info.map((info) => (
-                      <tbody className='bg-white divide-y divide-gray-200'>
-                        <tr key={info}>
+                    {info[0]?.map((info) => {
+                        console.log("INFO IS ", info)
+                      return (
+                      <tbody key={info.QuestionId} className='bg-white divide-y divide-gray-200'>
+                        <tr key={info.QuestionId}>
                           <td className='px-6 py-4 whitespace-nowrap'>
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {info[0].QuestionId}
+                                  {info.QuestionId}
                                 </div>
                               </div>
                             </div>
@@ -625,9 +623,9 @@ const Admin_Result = () => {
                                       >
                                         {
                                           // check if the language is english
-                                          info[0].Language === 'English'
-                                            ? info[0].Content
-                                            : info[1].Content
+                                          info.Language === 'English'
+                                            ? info.Content
+                                            : info.Content
                                         }
                                       </Typography>
                                       {/*Display options */}
@@ -674,12 +672,12 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info[0]
+                                                              {info
                                                                 .Language ===
                                                               'English'
-                                                                ? info[0]
+                                                                ? info
                                                                     .Options[0]
-                                                                : info[1]
+                                                                : info
                                                                     .Options[0]}
                                                             </div>
                                                           </div>
@@ -689,12 +687,12 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info[0]
+                                                              {info
                                                                 .Language ===
                                                               'English'
-                                                                ? info[0]
+                                                                ? info
                                                                     .Options[1]
-                                                                : info[1]
+                                                                : info
                                                                     .Options[1]}
                                                             </div>
                                                           </div>
@@ -704,12 +702,12 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info[0]
+                                                              {info
                                                                 .Language ===
                                                               'English'
-                                                                ? info[0]
+                                                                ? info
                                                                     .Options[2]
-                                                                : info[1]
+                                                                : info
                                                                     .Options[2]}
                                                             </div>
                                                           </div>
@@ -719,12 +717,12 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info[0]
+                                                              {info
                                                                 .Language ===
                                                               'English'
-                                                                ? info[0]
+                                                                ? info
                                                                     .Options[3]
-                                                                : info[1]
+                                                                : info
                                                                     .Options[3]}
                                                             </div>
                                                           </div>
@@ -785,9 +783,9 @@ const Admin_Result = () => {
                                       >
                                         {
                                           // check if the language is english
-                                          info[0].Language === 'Punjabi'
-                                            ? info[0].Content
-                                            : info[1].Content
+                                          info.Language === 'Punjabi'
+                                            ? info.Content
+                                            : info.Content
                                         }
                                       </Typography>
                                       {/*Display options */}
@@ -834,12 +832,12 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info[0]
+                                                              {info
                                                                 .Language ===
                                                               'Punjabi'
-                                                                ? info[0]
+                                                                ? info
                                                                     .Options[0]
-                                                                : info[1]
+                                                                : info
                                                                     .Options[0]}
                                                             </div>
                                                           </div>
@@ -849,12 +847,12 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info[0]
+                                                              {info
                                                                 .Language ===
                                                               'Punjabi'
-                                                                ? info[0]
+                                                                ? info
                                                                     .Options[1]
-                                                                : info[1]
+                                                                : info
                                                                     .Options[1]}
                                                             </div>
                                                           </div>
@@ -864,12 +862,12 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info[0]
+                                                              {info
                                                                 .Language ===
                                                               'Punjabi'
-                                                                ? info[0]
+                                                                ? info
                                                                     .Options[2]
-                                                                : info[1]
+                                                                : info
                                                                     .Options[2]}
                                                             </div>
                                                           </div>
@@ -879,12 +877,12 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info[0]
+                                                              {info
                                                                 .Language ===
                                                               'Punjabi'
-                                                                ? info[0]
+                                                                ? info
                                                                     .Options[3]
-                                                                : info[1]
+                                                                : info
                                                                     .Options[3]}
                                                             </div>
                                                           </div>
@@ -908,14 +906,14 @@ const Admin_Result = () => {
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {info[0].Correct_option}
+                                  {info.Correct_option}
                                 </div>
                               </div>
                             </div>
                           </td>
                           <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
                             <a
-                              href={info[0].Image}
+                              href={info.Image}
                               className='text-indigo-600 hover:text-indigo-900'
                             >
                               Download
@@ -977,7 +975,10 @@ const Admin_Result = () => {
                           </td>
                         </tr>
                       </tbody>
-                    ))}
+                    )
+                    }
+                    )
+                  }
                   </table>
                 </div>
               </div>
