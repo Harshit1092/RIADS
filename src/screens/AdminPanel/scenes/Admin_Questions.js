@@ -35,6 +35,7 @@ import { mockDataResult } from '../data/mockData';
 import { tokens } from '../theme';
 import Sidebar from './global/Sidebar';
 import Topbar from './global/Topbar';
+import { CollectionsBookmark } from '@mui/icons-material';
 
 // import { Controller } from 'react-hook-form';
 
@@ -64,6 +65,8 @@ const Admin_Result = () => {
   const [open, setOpen] = useState(false);
 
   const [open_eng, setOpenEng] = useState(false);
+
+  const [content_ques, setContentQues] = useState(['English', 'ENG_QUES', ['1','2','3','4']])
 
   const handleCloseEng = () => {
     setOpenEng(false);
@@ -203,14 +206,36 @@ const Admin_Result = () => {
 
         // setInfo(InfoisList);
         // console.log(InfoisList);
-        // Club the data with the same id
-        const unique = [...new Set(InfoisList.map((item) => item.id))];
-        const uniqueData = [];
-        unique.forEach((id) => {
-          const data = InfoisList.filter((item) => item.id === id);
-          uniqueData.push(data);
+        // Club the data with the same id and separate content_eng and content_punj
+        console.log("INFOLST: ", InfoisList);
+        const unique = InfoisList.reduce((acc, current) => {
+          const x = acc.find((item) => item.QuestionId === current.QuestionId);
+          if (!x) {
+            return acc.concat([current]);
+          } else {
+            return acc;
+          }
+        }, []);
+
+
+        const uniqueData = unique.map((ele) => {
+          const eng = InfoisList.filter((e) => {
+            return e.QuestionId === ele.QuestionId && e.Language === 'English';
+          });
+          const punj = InfoisList.filter((e) => {
+            return e.QuestionId === ele.QuestionId && e.Language === 'Punjabi';
+          });
+          return [eng[0], punj[0]];
         });
+
+        // const uniqueData = [];
+
+        // Club the data with the same id
+        console.log("UNIQUE: ", unique);
+
+        
         setInfo([...uniqueData]);
+        console.log("UNIQUE DATA is: ", uniqueData);
       });
   }, []);
 
@@ -566,16 +591,18 @@ const Admin_Result = () => {
                         </th>
                       </tr>
                     </thead>
-                    {info[0]?.map((info) => {
-                        console.log("INFO IS ", info)
+                    {info?.map((info_data) => {
+                        // console.log("INFOOO IS ", info);
                       return (
-                      <tbody key={info.QuestionId} className='bg-white divide-y divide-gray-200'>
-                        <tr key={info.QuestionId}>
+                      <tbody key={info_data.QuestionId} className='bg-white divide-y divide-gray-200'>
+                        <tr key={info_data.QuestionId}>
                           <td className='px-6 py-4 whitespace-nowrap'>
                             <div className='flex items-center'>
                               <div className='ml-4'>
                                 <div className='text-sm font-medium text-gray-900'>
-                                  {info.QuestionId}
+                                  {/* {info.QuestionId} */}
+                                  {/* {info_data.Language === 'English' ? info_data.Content : ""} */}
+                                  { info_data[0].Language === 'English' ? info_data[0].Content : info_data[1].Content} 
                                 </div>
                               </div>
                             </div>
@@ -593,13 +620,128 @@ const Admin_Result = () => {
                                       // setModalData(info);
 
                                       //open the modal
+                                      // console.log(info);
+                                      // if (info.Language === 'English') 
+                                      // {
+                                      //   setContEng(info.Content)
+                                      // }
+                                      // setContEng(info.Content) 
+                                      handleOpenEng("English");
+                                      setContentQues([info_data[0].Language, info_data[0].Content, info_data[0].Options]);
+                                    }}
+                                  >
+                                    Vieww
+                                  </Button>
+
+                                  
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className='px-6 py-4 whitespace-nowrap'>
+                            <div className='flex items-center'>
+                              <div className='ml-4'>
+                                <div className='text-sm font-medium text-gray-900'>
+                                  <Button
+                                    variant='contained'
+                                    color='secondary'
+                                    onClick={() => {
+                                      // create Modal and show the data
+                                      // console.log(info);
+                                      // setModalData(info);
                                       handleOpenEng();
+                                      setContentQues([info_data[1].Language, info_data[1].Content, info_data[1].Options]);
                                     }}
                                   >
                                     View
                                   </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className='px-6 py-4 whitespace-nowrap'>
+                            <div className='flex items-center'>
+                              <div className='ml-4'>
+                                <div className='text-sm font-medium text-gray-900'>
+                                  { info_data[0].Language === 'Punjabi' ? info_data[0].Content : info_data[1].Content}  
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                            <a
+                              href={info_data[0].Image}
+                              className='text-indigo-600 hover:text-indigo-900'
+                            >
+                              Download
+                            </a>
+                          </td>
+                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                            <Button
+                              variant='contained'
+                              color='secondary'
+                              type='submit'
+                              onClick={async () => {
+                                // Delete both the documents
+                                const q = query(
+                                  collection(db, 'test-questions'),
+                                  where('QuestionId', '==', info_data[0].QuestionId)
+                                );
+                                await getDocs(q).then(async (response) => {
+                                  let data = response.docs.map((ele) => ({
+                                    ...ele.data(),
+                                  }));
+                                  const ref = doc(
+                                    db,
+                                    'test-questions',
+                                    response.docs[0].id
+                                  );
+                                  await deleteDoc(ref);
+                                });
 
-                                  <Modal
+                                const q1 = query(
+                                  collection(db, 'test-questions'),
+                                  where('QuestionId', '==', info_data[1].QuestionId)
+                                );
+                                await getDocs(q1).then(async (response) => {
+                                  let data = response.docs.map((ele) => ({
+                                    ...ele.data(),
+                                  }));
+                                  const ref = doc(
+                                    db,
+                                    'test-questions',
+                                    response.docs[0].id
+                                  );
+                                  await deleteDoc(ref);
+                                });
+
+                                
+                                window.location.reload();
+
+                                // console.log(info.id);
+                                // // get the document id and delete it
+                                // const q = query(collection(db, "study"), where("id", "==", info.id));
+                                // await getDocs(q).then(async (response) => {
+                                //     let data = response.docs.map((ele) => ({ ...ele.data() }));
+                                //     const ref = doc(db, 'study', response.docs[0].id);
+                                //     await deleteDoc(ref);
+                                //     // Refresh the page
+                                //     window.location.reload();
+                                // });
+                              }}
+                            >
+                              Delete
+                            </Button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    )
+                    }
+                    )
+                  }
+
+                  </table>
+                  <Modal
                                     onClose={handleCloseEng}
                                     open={open_eng}
                                   >
@@ -623,12 +765,15 @@ const Admin_Result = () => {
                                       >
                                         {
                                           // check if the language is english
-                                          info.Language === 'English'
-                                            ? info.Content
-                                            : info.Content
+                                          // info.Language === 'English'
+                                          //   ? info.Content
+                                          //   : info.Content
+
+                                          // console.log(content_ques)
+                                          content_ques[1]
+
                                         }
                                       </Typography>
-                                      {/*Display options */}
                                       <Typography
                                         id='modal-modal-description'
                                         sx={{ mt: 2 }}
@@ -672,13 +817,9 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info
-                                                                .Language ===
-                                                              'English'
-                                                                ? info
-                                                                    .Options[0]
-                                                                : info
-                                                                    .Options[0]}
+                                                              {
+                                                                content_ques[2][0]
+                                                              }
                                                             </div>
                                                           </div>
                                                         </div>
@@ -687,13 +828,7 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info
-                                                                .Language ===
-                                                              'English'
-                                                                ? info
-                                                                    .Options[1]
-                                                                : info
-                                                                    .Options[1]}
+                                                              {content_ques[2][1]}
                                                             </div>
                                                           </div>
                                                         </div>
@@ -702,13 +837,7 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info
-                                                                .Language ===
-                                                              'English'
-                                                                ? info
-                                                                    .Options[2]
-                                                                : info
-                                                                    .Options[2]}
+                                                              {content_ques[2][2]}
                                                             </div>
                                                           </div>
                                                         </div>
@@ -717,13 +846,7 @@ const Admin_Result = () => {
                                                         <div className='flex items-center'>
                                                           <div className='ml-4'>
                                                             <div className='text-sm font-medium text-gray-900'>
-                                                              {info
-                                                                .Language ===
-                                                              'English'
-                                                                ? info
-                                                                    .Options[3]
-                                                                : info
-                                                                    .Options[3]}
+                                                              {content_ques[2][3]}
                                                             </div>
                                                           </div>
                                                         </div>
@@ -738,248 +861,6 @@ const Admin_Result = () => {
                                       </Typography>
                                     </Box>
                                   </Modal>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='flex items-center'>
-                              <div className='ml-4'>
-                                <div className='text-sm font-medium text-gray-900'>
-                                  <Button
-                                    variant='contained'
-                                    color='secondary'
-                                    onClick={() => {
-                                      // create Modal and show the data
-                                      // console.log(info);
-                                      // setModalData(info);
-                                      handleOpenPunj();
-                                    }}
-                                  >
-                                    View
-                                  </Button>
-
-                                  <Modal
-                                    onClose={handleClosePunj}
-                                    open={open_punj}
-                                  >
-                                    <Box
-                                      sx={{
-                                        position: 'absolute',
-                                        top: '50%',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%)',
-                                        width: 900,
-                                        bgcolor: 'background.paper',
-                                        border: '2px solid #000',
-                                        boxShadow: 24,
-                                        p: 4,
-                                      }}
-                                    >
-                                      <Typography
-                                        id='modal-modal-correct_option'
-                                        variant='h6'
-                                        component='h2'
-                                      >
-                                        {
-                                          // check if the language is english
-                                          info.Language === 'Punjabi'
-                                            ? info.Content
-                                            : info.Content
-                                        }
-                                      </Typography>
-                                      {/*Display options */}
-                                      <Typography
-                                        id='modal-modal-description'
-                                        sx={{ mt: 2 }}
-                                      >
-                                        <div className='flex flex-col'>
-                                          <div className='-my-4 overflow-x-auto'>
-                                            <div className='py-6 align-middle inline-block min-w-full pl-4 pr-4'>
-                                              <div className='shadow overflow-hidden border-b border-gray-200 sm:rounded-lg'>
-                                                <table className='min-w-full divide-y divide-gray-200'>
-                                                  <thead className='bg-gray-50'>
-                                                    <tr>
-                                                      <th
-                                                        scope='col'
-                                                        className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
-                                                      >
-                                                        Option 1
-                                                      </th>
-                                                      <th
-                                                        scope='col'
-                                                        className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
-                                                      >
-                                                        Option 2
-                                                      </th>
-                                                      <th
-                                                        scope='col'
-                                                        className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
-                                                      >
-                                                        Option 3
-                                                      </th>
-                                                      <th
-                                                        scope='col'
-                                                        className='px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider'
-                                                      >
-                                                        Option 4
-                                                      </th>
-                                                    </tr>
-                                                  </thead>
-                                                  <tbody className='bg-white divide-y divide-gray-200'>
-                                                    <tr key={info}>
-                                                      <td className='px-6 py-4 whitespace-nowrap'>
-                                                        <div className='flex items-center'>
-                                                          <div className='ml-4'>
-                                                            <div className='text-sm font-medium text-gray-900'>
-                                                              {info
-                                                                .Language ===
-                                                              'Punjabi'
-                                                                ? info
-                                                                    .Options[0]
-                                                                : info
-                                                                    .Options[0]}
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </td>
-                                                      <td className='px-6 py-4 whitespace-nowrap'>
-                                                        <div className='flex items-center'>
-                                                          <div className='ml-4'>
-                                                            <div className='text-sm font-medium text-gray-900'>
-                                                              {info
-                                                                .Language ===
-                                                              'Punjabi'
-                                                                ? info
-                                                                    .Options[1]
-                                                                : info
-                                                                    .Options[1]}
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </td>
-                                                      <td className='px-6 py-4 whitespace-nowrap'>
-                                                        <div className='flex items-center'>
-                                                          <div className='ml-4'>
-                                                            <div className='text-sm font-medium text-gray-900'>
-                                                              {info
-                                                                .Language ===
-                                                              'Punjabi'
-                                                                ? info
-                                                                    .Options[2]
-                                                                : info
-                                                                    .Options[2]}
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </td>
-                                                      <td className='px-6 py-4 whitespace-nowrap'>
-                                                        <div className='flex items-center'>
-                                                          <div className='ml-4'>
-                                                            <div className='text-sm font-medium text-gray-900'>
-                                                              {info
-                                                                .Language ===
-                                                              'Punjabi'
-                                                                ? info
-                                                                    .Options[3]
-                                                                : info
-                                                                    .Options[3]}
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </td>
-                                                    </tr>
-                                                  </tbody>
-                                                </table>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </Typography>
-                                    </Box>
-                                  </Modal>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap'>
-                            <div className='flex items-center'>
-                              <div className='ml-4'>
-                                <div className='text-sm font-medium text-gray-900'>
-                                  {info.Correct_option}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
-                            <a
-                              href={info.Image}
-                              className='text-indigo-600 hover:text-indigo-900'
-                            >
-                              Download
-                            </a>
-                          </td>
-                          <td className='px-6 py-4 whitespace-nowrap text-center text-sm font-medium'>
-                            <Button
-                              variant='contained'
-                              color='secondary'
-                              type='submit'
-                              onClick={async () => {
-                                // Delete both the documents
-                                const q = query(
-                                  collection(db, 'test-questions'),
-                                  where('QuestionId', '==', info[0].QuestionId)
-                                );
-                                await getDocs(q).then(async (response) => {
-                                  let data = response.docs.map((ele) => ({
-                                    ...ele.data(),
-                                  }));
-                                  const ref = doc(
-                                    db,
-                                    'test-questions',
-                                    response.docs[0].id
-                                  );
-                                  await deleteDoc(ref);
-                                });
-
-                                const q1 = query(
-                                  collection(db, 'test-questions'),
-                                  where('QuestionId', '==', info[1].QuestionId)
-                                );
-                                await getDocs(q1).then(async (response) => {
-                                  let data = response.docs.map((ele) => ({
-                                    ...ele.data(),
-                                  }));
-                                  const ref = doc(
-                                    db,
-                                    'test-questions',
-                                    response.docs[0].id
-                                  );
-                                  await deleteDoc(ref);
-                                });
-
-                                // console.log(info.id);
-                                // // get the document id and delete it
-                                // const q = query(collection(db, "study"), where("id", "==", info.id));
-                                // await getDocs(q).then(async (response) => {
-                                //     let data = response.docs.map((ele) => ({ ...ele.data() }));
-                                //     const ref = doc(db, 'study', response.docs[0].id);
-                                //     await deleteDoc(ref);
-                                //     // Refresh the page
-                                //     window.location.reload();
-                                // });
-                              }}
-                            >
-                              Delete
-                            </Button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    )
-                    }
-                    )
-                  }
-                  </table>
                 </div>
               </div>
             </div>
