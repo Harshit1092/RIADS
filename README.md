@@ -68,3 +68,17 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### Installation commands
+curl -s https://deb.nodesource.com/setup_16.x | sudo bash
+apt install nodejs
+apt install npm
+git clone https://github.com/Arker123/RIADS
+npm i --legacy-peer-deps
+# use serve to serve the build folder
+npm install -g serve
+npm run build
+serve -s build
+screen -r serve -s build -p 80
+
